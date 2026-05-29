@@ -16,9 +16,10 @@ export default function MobileLayout({ children }) {
 
   return (
     <div style={{
+      position: "fixed",
+      inset: 0,
       display: "flex",
       flexDirection: "column",
-      height: "100svh",
       overflow: "hidden",
       background: "var(--color-background-primary)",
       fontFamily: "var(--font-sans)",

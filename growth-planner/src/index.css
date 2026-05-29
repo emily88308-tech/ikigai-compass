@@ -68,17 +68,23 @@
   }
 }
 
+html {
+  height: 100%;
+}
+
 body {
   margin: 0;
   background:
     radial-gradient(1200px 600px at 15% -10%, rgba(127, 119, 221, 0.10), transparent 60%),
     radial-gradient(1000px 600px at 100% 0%, rgba(212, 83, 126, 0.07), transparent 55%),
     var(--color-background-secondary);
+  height: 100%;
   min-height: 100svh;
 }
 
 #root {
   width: 100%;
+  height: 100%;
   min-height: 100svh;
   text-align: left;
   box-sizing: border-box;
