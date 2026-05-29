@@ -1,16 +1,18 @@
 import { CATS, CAT_KEYS } from "../lib/constants";
 import { useGoalsStore } from "../store/goalsStore";
+import { useIsMobile } from "../hooks/useWindowSize";
 import RadarChart from "./RadarChart";
 
 export default function LifeBalanceCard() {
   const goals = useGoalsStore(s=>s.goals);
   const resolutions = useGoalsStore(s=>s.resolutions);
   const activeGoals = goals.filter(g=>(g.status||"active")==="active");
+  const isMobile = useIsMobile();
 
   return (
-    <div style={{display:"flex",gap:12,marginBottom:20,background:"var(--color-background-secondary)",borderRadius:14,padding:14,alignItems:"center"}}>
-      <div style={{width:180,flexShrink:0}}><RadarChart goals={goals} resolutions={resolutions}/></div>
-      <div style={{flex:1,minWidth:0}}>
+    <div style={{display:"flex",flexDirection:isMobile?"column":"row",gap:isMobile?6:12,marginBottom:20,background:"var(--color-background-secondary)",borderRadius:14,padding:14,alignItems:"center"}}>
+      <div style={{width:isMobile?220:180,maxWidth:"100%",flexShrink:0}}><RadarChart goals={goals} resolutions={resolutions}/></div>
+      <div style={{flex:1,minWidth:0,width:isMobile?"100%":"auto"}}>
         <div style={{fontSize:13,fontWeight:500,color:"var(--color-text-primary)",marginBottom:10}}>Life balance</div>
         {CAT_KEYS.map(k=>{
           const cg=activeGoals.filter(g=>g.category===k);

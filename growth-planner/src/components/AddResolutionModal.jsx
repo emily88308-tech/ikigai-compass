@@ -2,20 +2,22 @@ import { useState } from "react";
 import { CATS } from "../lib/constants";
 import { useGoalsStore } from "../store/goalsStore";
 import { useUiStore } from "../store/uiStore";
+import { useIsMobile } from "../hooks/useWindowSize";
 
 export default function AddResolutionModal() {
   const goals = useGoalsStore(s=>s.goals);
   const addResolution = useGoalsStore(s=>s.addResolution);
   const ctx = useUiStore(s=>s.addResCtx) || {};
   const onClose = useUiStore(s=>s.closeAddRes);
+  const isMobile = useIsMobile();
 
   const activeGoals = goals.filter(g=>g.status==="active");
   const [goalId,setGoalId]=useState(ctx.goalId||activeGoals[0]?.id||""),[type,setType]=useState(ctx.type||"monthly"),[title,setTitle]=useState("");
   const goal=activeGoals.find(g=>g.id===goalId), c=goal?CATS[goal.category]:{color:"#7F77DD",bg:"#EEEDFE"};
   function submit(){ if(!title.trim()||!goalId) return; addResolution({goalId,type,title:title.trim()}); onClose(); }
   return (
-    <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:200}}>
-      <div style={{background:"#ffffff",borderRadius:20,padding:28,width:"min(420px,94vw)",border:"0.5px solid #e0e0e0",boxSizing:"border-box",color:"#1a1a1a"}}>
+    <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",zIndex:200,animation:"overlay-fade .2s ease"}}>
+      <div onClick={e=>e.stopPropagation()} style={{background:"#ffffff",borderRadius:isMobile?"20px 20px 0 0":20,padding:isMobile?"24px 20px calc(24px + env(safe-area-inset-bottom))":28,width:isMobile?"100%":"min(420px,94vw)",border:"0.5px solid #e0e0e0",maxHeight:isMobile?"90svh":"92vh",overflowY:"auto",boxSizing:"border-box",color:"#1a1a1a",animation:isMobile?"sheet-up .28s ease":"none"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}>
           <h2 style={{margin:0,fontSize:17,fontWeight:500}}>New resolution</h2>
           <button onClick={onClose} style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:22,lineHeight:1}}>×</button>

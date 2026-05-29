@@ -2,17 +2,19 @@ import { useState } from "react";
 import { CATS, CAT_KEYS, STATUS } from "../lib/constants";
 import { useGoalsStore } from "../store/goalsStore";
 import { useUiStore } from "../store/uiStore";
+import { useIsMobile } from "../hooks/useWindowSize";
 
 export default function AddGoalModal() {
   const addGoal = useGoalsStore(s=>s.addGoal);
   const onClose = useUiStore(s=>s.closeAddGoal);
+  const isMobile = useIsMobile();
 
   const [cat,setCat]=useState("career"),[title,setTitle]=useState(""),[desc,setDesc]=useState(""),[why,setWhy]=useState(""),[status,setStatus]=useState("active");
   const c=CATS[cat];
   function submit(){ if(!title.trim()) return; addGoal({category:cat,title:title.trim(),description:desc.trim(),why:why.trim(),status}); onClose(); }
   return (
-    <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:200}}>
-      <div style={{background:"#ffffff",borderRadius:20,padding:28,width:"min(480px,94vw)",border:"0.5px solid #e0e0e0",maxHeight:"92vh",overflowY:"auto",boxSizing:"border-box",color:"#1a1a1a"}}>
+    <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",zIndex:200,animation:"overlay-fade .2s ease"}}>
+      <div onClick={e=>e.stopPropagation()} style={{background:"#ffffff",borderRadius:isMobile?"20px 20px 0 0":20,padding:isMobile?"24px 20px calc(24px + env(safe-area-inset-bottom))":28,width:isMobile?"100%":"min(480px,94vw)",border:"0.5px solid #e0e0e0",maxHeight:isMobile?"90svh":"92vh",overflowY:"auto",boxSizing:"border-box",color:"#1a1a1a",animation:isMobile?"sheet-up .28s ease":"none"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}>
           <h2 style={{margin:0,fontSize:17,fontWeight:500}}>New goal</h2>
           <button onClick={onClose} style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:22,lineHeight:1}}>×</button>
