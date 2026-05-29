@@ -1,5 +1,6 @@
 import { useAuthStore } from "../store/authStore";
 import { useUiStore } from "../store/uiStore";
+import { useWindowSize } from "../hooks/useWindowSize";
 import CategoryPills from "./CategoryPills";
 import BottomTabBar from "./BottomTabBar";
 
@@ -10,6 +11,10 @@ export default function MobileLayout({ children }) {
   const page = useUiStore((s) => s.page);
   const signOut = useAuthStore((s) => s.signOut);
   const email = useAuthStore((s) => s.user?.email);
+  // iOS standalone mode miscomputes svh/vh and even position:fixed bottom:0
+  // leaves a gap. window.innerHeight reports the true window height there, so
+  // we size the shell explicitly from it (updates on rotation via the hook).
+  const { height } = useWindowSize();
 
   const showPills =
     page === "active" || page.startsWith("cat:") || page === "someday" || page === "achieved";
@@ -17,7 +22,10 @@ export default function MobileLayout({ children }) {
   return (
     <div style={{
       position: "fixed",
-      inset: 0,
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: height ? `${height}px` : "100svh",
       display: "flex",
       flexDirection: "column",
       overflow: "hidden",
