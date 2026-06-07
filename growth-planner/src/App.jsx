@@ -14,6 +14,7 @@ import ReviewPane from "./components/ReviewPane";
 import AICoach from "./components/AICoach";
 import AddGoalModal from "./components/AddGoalModal";
 import AddResolutionModal from "./components/AddResolutionModal";
+import Toast from "./components/Toast";
 
 // Maps the current page to its view. Shared by the desktop and mobile shells.
 function PageContent({ page }) {
@@ -44,6 +45,7 @@ export default function App() {
     <>
       {addGoalOpen && <AddGoalModal/>}
       {addResCtx && <AddResolutionModal/>}
+      <Toast/>
     </>
   );
 

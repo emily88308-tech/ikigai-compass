@@ -1,8 +1,16 @@
 import { create } from "zustand";
 import * as db from "../lib/db";
+import { useUiStore } from "./uiStore";
 import { uid, today } from "../lib/utils";
 
-const logFail = (e) => console.error("Supabase write failed", e);
+// A failed write means the change lives only in local state and will vanish on
+// refresh — so we make it loud (visible banner) instead of swallowing it.
+const logFail = (e) => {
+  console.error("Supabase write failed", e);
+  useUiStore.getState().showToast(
+    `Couldn't save your change — it may be lost on refresh. (${e?.message || "unknown error"})`
+  );
+};
 
 // Domain state: goals, resolutions, reviews. Every mutation updates local state
 // optimistically and then persists to Supabase (logging, not throwing, on failure).
@@ -22,6 +30,9 @@ export const useGoalsStore = create((set, get) => ({
       set({ goals: d.goals, resolutions: d.resolutions, reviews: d.reviews });
     } catch (e) {
       console.error("Load failed", e);
+      useUiStore.getState().showToast(
+        `Couldn't load your goals — ${e?.message || "unknown error"}. Try refreshing.`
+      );
     }
   },
 
