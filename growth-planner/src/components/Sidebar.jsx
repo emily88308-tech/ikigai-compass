@@ -43,6 +43,7 @@ export default function Sidebar() {
       <SideNavBtn id="anytime" label="Anytime" active={page==="anytime"} onClick={setPage}/>
 
       <div style={{padding:"14px 16px 5px",fontSize:10,fontWeight:500,color:"var(--color-text-tertiary)",textTransform:"uppercase",letterSpacing:"0.06em"}}>Reflect</div>
+      <SideNavBtn id="achievements" label="Achievements" count={goals.filter(g=>g.status==="achieved").length} active={page==="achievements"} onClick={setPage}/>
       <SideNavBtn id="review" label="Review" active={page==="review"} onClick={setPage}/>
       <SideNavBtn id="coach" label="AI coach" active={page==="coach"} onClick={setPage}/>
       <div style={{flex:1}}/>

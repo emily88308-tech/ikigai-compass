@@ -4,12 +4,14 @@ import { supabase } from "./supabase";
 const goalToRow = (g, userId) => ({
   id: g.id, user_id: userId, category: g.category, title: g.title,
   description: g.description || "", why: g.why || "", status: g.status || "active",
+  kind: g.kind || "outcome", target_date: g.targetDate || null, achieved_at: g.achievedAt || null,
   reflections: g.reflections || [], created_at: g.createdAt,
 });
 const rowToGoal = (r) => ({
   id: r.id, category: r.category, title: r.title, description: r.description || "",
-  why: r.why || "", status: r.status || "active", reflections: r.reflections || [],
-  createdAt: r.created_at,
+  why: r.why || "", status: r.status || "active", kind: r.kind || "outcome",
+  targetDate: r.target_date || "", achievedAt: r.achieved_at || null,
+  reflections: r.reflections || [], createdAt: r.created_at,
 });
 
 const resToRow = (r, userId) => ({

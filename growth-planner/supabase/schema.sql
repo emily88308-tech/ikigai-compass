@@ -14,10 +14,18 @@ create table if not exists public.goals (
   description text not null default '',
   why         text not null default '',
   status      text not null default 'active',
+  kind        text not null default 'outcome',       -- 'outcome' (has a finish line) | 'ongoing'
+  target_date text,                                  -- 'YYYY-MM-DD' soft deadline, outcome goals only
+  achieved_at bigint,                                -- epoch ms, stamped when status flips to 'achieved'
   reflections jsonb not null default '[]'::jsonb,
   created_at  bigint not null,                       -- Date.now() from the client
   inserted_at timestamptz not null default now()
 );
+
+-- Backfill columns on databases created before these fields existed.
+alter table public.goals add column if not exists kind        text not null default 'outcome';
+alter table public.goals add column if not exists target_date text;
+alter table public.goals add column if not exists achieved_at bigint;
 
 create table if not exists public.resolutions (
   id          text primary key,

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { CATS, STATUS, RES_TYPES, RES_TYPE_KEYS } from "../lib/constants";
-import { uid, today } from "../lib/utils";
+import { CATS, STATUS, RES_TYPES, RES_TYPE_KEYS, GOAL_KINDS } from "../lib/constants";
+import { uid, today, fmtTs, fmtDateStr, todayISO } from "../lib/utils";
 import { useGoalsStore } from "../store/goalsStore";
 import { useUiStore } from "../store/uiStore";
 import StatusPicker from "./StatusPicker";
@@ -25,6 +25,8 @@ export default function GoalCard({ goal, showStatus }) {
   function addReflection(){ if(!newNote.trim()) return; updateGoal({...goal,reflections:[...reflections,{id:uid(),text:newNote.trim(),date:today()}]}); setNewNote(""); }
   function deleteReflection(id){ updateGoal({...goal,reflections:reflections.filter(r=>r.id!==id)}); }
   const isActive = goal.status==="active" || !goal.status;
+  const isOngoing = goal.kind==="ongoing";
+  const overdue = goal.targetDate && goal.status!=="achieved" && goal.targetDate < todayISO();
 
   return (
     <div style={{background:"var(--color-background-primary)",borderRadius:14,border:"0.5px solid var(--color-border-tertiary)",overflow:"hidden",marginBottom:12,borderTop:`3px solid ${c.color}`,opacity:goal.status==="achieved"?.85:1}}>
@@ -35,6 +37,9 @@ export default function GoalCard({ goal, showStatus }) {
             {showStatus&&<span style={{fontSize:11,padding:"2px 10px",borderRadius:20,background:s.bg,color:s.color,fontWeight:500}}>{s.label}</span>}
             {pct!=null&&<span style={{fontSize:11,color:"var(--color-text-tertiary)"}}>{pct}% complete</span>}
             {reflections.length>0&&<span style={{fontSize:11,color:"var(--color-text-tertiary)"}}>· {reflections.length} note{reflections.length!==1?"s":""}</span>}
+            {isOngoing&&<span style={{fontSize:11,padding:"2px 9px",borderRadius:20,background:GOAL_KINDS.ongoing.color+"14",color:GOAL_KINDS.ongoing.color,fontWeight:500}}>Ongoing</span>}
+            {goal.status==="achieved"&&goal.achievedAt&&<span style={{fontSize:11,color:"#1D9E75",fontWeight:500}}>✓ {fmtTs(goal.achievedAt)}</span>}
+            {goal.targetDate&&goal.status!=="achieved"&&<span style={{fontSize:11,fontWeight:500,color:overdue?"#D4537E":"var(--color-text-tertiary)"}}>{overdue?"⚑ Overdue · ":"◷ By "}{fmtDateStr(goal.targetDate)}</span>}
           </div>
           <div style={{fontSize:15,fontWeight:500,color:"var(--color-text-primary)",lineHeight:1.3,marginBottom:5,textDecoration:goal.status==="achieved"?"line-through":"none"}}>{goal.title}</div>
           <div style={{fontSize:12,color:"var(--color-text-secondary)",display:"flex",gap:10,flexWrap:"wrap"}}>

@@ -15,6 +15,15 @@ export const STATUS = {
   achieved: { label: "Achieved", color: "#1D9E75", bg: "#E1F5EE" },
 };
 
+// Goal kinds. "outcome" goals have a finish line (can be completed, may carry a
+// target date); "ongoing" goals have no end — they're measured by the output
+// they accumulate, not by completion.
+export const GOAL_KINDS = {
+  outcome: { label: "Outcome",  desc: "Has a finish line",       color: "#7F77DD" },
+  ongoing: { label: "Ongoing",  desc: "Keeps producing, no end", color: "#378ADD" },
+};
+export const GOAL_KIND_KEYS = Object.keys(GOAL_KINDS);
+
 // Resolution buckets. monthly/weekly are recurring cadences; "anytime" is for
 // one-off tasks with no fixed schedule (do it when the moment is right).
 export const RES_TYPES = {

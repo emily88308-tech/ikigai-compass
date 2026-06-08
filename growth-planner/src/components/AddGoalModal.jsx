@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CATS, CAT_KEYS, STATUS } from "../lib/constants";
+import { CATS, CAT_KEYS, STATUS, GOAL_KINDS, GOAL_KIND_KEYS } from "../lib/constants";
 import { useGoalsStore } from "../store/goalsStore";
 import { useUiStore } from "../store/uiStore";
 import { useIsMobile } from "../hooks/useWindowSize";
@@ -11,12 +11,13 @@ export default function AddGoalModal() {
   const onClose = useUiStore(s=>s.closeAddGoal);
   const isMobile = useIsMobile();
 
-  const [cat,setCat]=useState(editGoal?.category||"career"),[title,setTitle]=useState(editGoal?.title||""),[desc,setDesc]=useState(editGoal?.description||""),[why,setWhy]=useState(editGoal?.why||""),[status,setStatus]=useState(editGoal?.status||"active");
+  const [cat,setCat]=useState(editGoal?.category||"career"),[title,setTitle]=useState(editGoal?.title||""),[desc,setDesc]=useState(editGoal?.description||""),[why,setWhy]=useState(editGoal?.why||""),[status,setStatus]=useState(editGoal?.status||"active"),[kind,setKind]=useState(editGoal?.kind||"outcome"),[targetDate,setTargetDate]=useState(editGoal?.targetDate||"");
   const c=CATS[cat];
   function submit(){
     if(!title.trim()) return;
-    const fields={category:cat,title:title.trim(),description:desc.trim(),why:why.trim(),status};
-    if(editGoal) updateGoal({...editGoal,...fields}); // preserves id, reflections, createdAt
+    // Ongoing goals have no finish line, so a target date doesn't apply.
+    const fields={category:cat,title:title.trim(),description:desc.trim(),why:why.trim(),status,kind,targetDate:kind==="outcome"?targetDate:""};
+    if(editGoal) updateGoal({...editGoal,...fields}); // preserves id, reflections, createdAt, achievedAt
     else addGoal(fields);
     onClose();
   }
@@ -39,6 +40,26 @@ export default function AddGoalModal() {
             <button key={k} onClick={()=>setStatus(k)} style={{flex:1,padding:"7px 0",borderRadius:10,border:`1.5px solid ${status===k?v.color:"var(--color-border-tertiary)"}`,background:status===k?v.bg:"transparent",color:status===k?v.color:"var(--color-text-secondary)",cursor:"pointer",fontSize:13,fontWeight:status===k?500:400}}>{v.label}</button>
           ))}
         </div>
+
+        <div style={{fontSize:11,fontWeight:500,color:"var(--color-text-secondary)",letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:8}}>Goal type</div>
+        <div style={{display:"flex",gap:8,marginBottom:kind==="outcome"?14:20}}>
+          {GOAL_KIND_KEYS.map(k=>(
+            <button key={k} onClick={()=>setKind(k)} style={{flex:1,padding:"8px 0",borderRadius:10,border:`1.5px solid ${kind===k?GOAL_KINDS[k].color:"var(--color-border-tertiary)"}`,background:kind===k?`${GOAL_KINDS[k].color}14`:"transparent",color:kind===k?GOAL_KINDS[k].color:"var(--color-text-secondary)",cursor:"pointer",fontSize:13,fontWeight:kind===k?500:400}}>
+              <div>{GOAL_KINDS[k].label}</div>
+              <div style={{fontSize:10,fontWeight:400,opacity:.8,marginTop:2}}>{GOAL_KINDS[k].desc}</div>
+            </button>
+          ))}
+        </div>
+
+        {kind==="outcome"&&(
+          <div style={{marginBottom:20}}>
+            <div style={{fontSize:11,fontWeight:500,color:"var(--color-text-secondary)",letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:6}}>Target date <span style={{textTransform:"none",letterSpacing:0,color:"var(--color-text-tertiary)",fontWeight:400}}>· optional</span></div>
+            <div style={{display:"flex",gap:8,alignItems:"center"}}>
+              <input type="date" value={targetDate} onChange={e=>setTargetDate(e.target.value)} style={{flex:1,fontSize:14,padding:"9px 12px",borderRadius:10,border:"0.5px solid var(--color-border-secondary)",background:"var(--color-background-secondary)",color:"var(--color-text-primary)",boxSizing:"border-box"}}/>
+              {targetDate&&<button onClick={()=>setTargetDate("")} style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:12}}>Clear</button>}
+            </div>
+          </div>
+        )}
 
         <div style={{fontSize:11,fontWeight:500,color:"var(--color-text-secondary)",letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:6}}>Goal title</div>
         <input autoFocus value={title} onChange={e=>setTitle(e.target.value)} placeholder="e.g. Become a stronger communicator" style={{display:"block",width:"100%",marginBottom:18,fontSize:15,padding:"10px 13px",borderRadius:10,border:"0.5px solid var(--color-border-secondary)",background:"var(--color-background-secondary)",color:"var(--color-text-primary)",boxSizing:"border-box"}}/>

@@ -37,14 +37,24 @@ export const useGoalsStore = create((set, get) => ({
   },
 
   addGoal: (fields) => {
-    const goal = { id: uid(), status: "active", reflections: [], createdAt: Date.now(), ...fields };
+    const goal = { id: uid(), status: "active", kind: "outcome", reflections: [], createdAt: Date.now(), ...fields };
+    if (goal.status === "achieved" && !goal.achievedAt) goal.achievedAt = Date.now();
     set((s) => ({ goals: [...s.goals, goal] }));
     db.saveGoal(get().userId, goal).catch(logFail);
   },
 
   updateGoal: (goal) => {
-    set((s) => ({ goals: s.goals.map((g) => (g.id === goal.id ? goal : g)) }));
-    db.saveGoal(get().userId, goal).catch(logFail);
+    // Stamp achievedAt the moment a goal first becomes "achieved", and clear it
+    // if it's moved back out — so the Achievements timeline reflects real dates.
+    const prev = get().goals.find((g) => g.id === goal.id);
+    let next = goal;
+    if (goal.status === "achieved" && prev?.status !== "achieved") {
+      next = { ...goal, achievedAt: goal.achievedAt || Date.now() };
+    } else if (goal.status !== "achieved" && goal.achievedAt) {
+      next = { ...goal, achievedAt: null };
+    }
+    set((s) => ({ goals: s.goals.map((g) => (g.id === next.id ? next : g)) }));
+    db.saveGoal(get().userId, next).catch(logFail);
   },
 
   deleteGoal: (id) => {

@@ -11,6 +11,7 @@ import ActiveGoalsView from "./components/ActiveGoalsView";
 import GoalListPane from "./components/GoalListPane";
 import ResolutionsPane from "./components/ResolutionsPane";
 import ReviewPane from "./components/ReviewPane";
+import AchievementsView from "./components/AchievementsView";
 import AICoach from "./components/AICoach";
 import AddGoalModal from "./components/AddGoalModal";
 import AddResolutionModal from "./components/AddResolutionModal";
@@ -19,6 +20,7 @@ import Toast from "./components/Toast";
 // Maps the current page to its view. Shared by the desktop and mobile shells.
 function PageContent({ page }) {
   if (page === "coach") return <AICoach/>;
+  if (page === "achievements") return <AchievementsView/>;
   if (page === "review") return <ReviewPane/>;
   if (page === "monthly" || page === "weekly" || page === "anytime") return <ResolutionsPane type={page}/>;
   if (page === "someday") return <GoalListPane title="Someday" subtitle="Goals parked for later — revisit when the time is right" filterStatus="someday" accentColor="#BA7517" emptyIcon="◷" emptyMsg={"No goals here yet.\nPark a goal as Someday when you're not ready to pursue it."}/>;
