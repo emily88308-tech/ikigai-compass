@@ -37,7 +37,7 @@ export const useGoalsStore = create((set, get) => ({
   },
 
   addGoal: (fields) => {
-    const goal = { id: uid(), status: "active", kind: "outcome", reflections: [], createdAt: Date.now(), ...fields };
+    const goal = { id: uid(), status: "active", kind: "ongoing", reflections: [], createdAt: Date.now(), ...fields };
     if (goal.status === "achieved" && !goal.achievedAt) goal.achievedAt = Date.now();
     set((s) => ({ goals: [...s.goals, goal] }));
     db.saveGoal(get().userId, goal).catch(logFail);

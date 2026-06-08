@@ -11,7 +11,7 @@ export default function AddGoalModal() {
   const onClose = useUiStore(s=>s.closeAddGoal);
   const isMobile = useIsMobile();
 
-  const [cat,setCat]=useState(editGoal?.category||"career"),[title,setTitle]=useState(editGoal?.title||""),[desc,setDesc]=useState(editGoal?.description||""),[why,setWhy]=useState(editGoal?.why||""),[status,setStatus]=useState(editGoal?.status||"active"),[kind,setKind]=useState(editGoal?.kind||"outcome"),[targetDate,setTargetDate]=useState(editGoal?.targetDate||"");
+  const [cat,setCat]=useState(editGoal?.category||"career"),[title,setTitle]=useState(editGoal?.title||""),[desc,setDesc]=useState(editGoal?.description||""),[why,setWhy]=useState(editGoal?.why||""),[status,setStatus]=useState(editGoal?.status||"active"),[kind,setKind]=useState(editGoal?.kind||"ongoing"),[targetDate,setTargetDate]=useState(editGoal?.targetDate||"");
   const c=CATS[cat];
   function submit(){
     if(!title.trim()) return;
