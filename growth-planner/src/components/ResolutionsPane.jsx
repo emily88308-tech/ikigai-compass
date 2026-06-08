@@ -8,6 +8,7 @@ export default function ResolutionsPane({ type }) {
   const onToggle = useGoalsStore(s=>s.toggleResolution);
   const onDelete = useGoalsStore(s=>s.deleteResolution);
   const openAddRes = useUiStore(s=>s.openAddRes);
+  const openEditRes = useUiStore(s=>s.openEditRes);
 
   const activeGoalIds=new Set(goals.filter(g=>(g.status||"active")==="active").map(g=>g.id));
   const filtered=resolutions.filter(r=>r.type===type&&activeGoalIds.has(r.goalId));
@@ -36,7 +37,8 @@ export default function ResolutionsPane({ type }) {
                 <div style={{fontSize:14,color:r.done?"var(--color-text-tertiary)":"var(--color-text-primary)",textDecoration:r.done?"line-through":"none",marginBottom:4,lineHeight:1.3}}>{r.title}</div>
                 {goal&&<span style={{fontSize:11,padding:"2px 10px",borderRadius:20,background:c.bg,color:c.color,fontWeight:500}}>{goal.title}</span>}
               </div>
-              <button onClick={()=>onDelete(r.id)} style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:16,padding:"2px 4px",flexShrink:0}}>×</button>
+              <button onClick={()=>openEditRes(r)} title="Edit resolution" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:13,padding:"2px 4px",flexShrink:0}}>✎</button>
+              <button onClick={()=>onDelete(r.id)} title="Delete resolution" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:16,padding:"2px 4px",flexShrink:0}}>×</button>
             </div>
           );
         })}

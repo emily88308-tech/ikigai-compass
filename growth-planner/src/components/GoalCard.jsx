@@ -13,6 +13,8 @@ export default function GoalCard({ goal, showStatus }) {
   const deleteGoal = useGoalsStore(st=>st.deleteGoal);
   const updateGoal = useGoalsStore(st=>st.updateGoal);
   const openAddRes = useUiStore(st=>st.openAddRes);
+  const openEditRes = useUiStore(st=>st.openEditRes);
+  const openEditGoal = useUiStore(st=>st.openEditGoal);
 
   const c=CATS[goal.category], s=STATUS[goal.status||"active"];
   const myRes=allRes.filter(r=>r.goalId===goal.id);
@@ -42,7 +44,8 @@ export default function GoalCard({ goal, showStatus }) {
           </div>
         </div>
         <div style={{display:"flex",gap:6,alignItems:"center",flexShrink:0,marginTop:2}}>
-          <button onClick={e=>{e.stopPropagation();deleteGoal(goal.id);}} style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:17,padding:"2px 5px",lineHeight:1}}>×</button>
+          <button onClick={e=>{e.stopPropagation();openEditGoal(goal);}} title="Edit goal" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:13,padding:"2px 5px",lineHeight:1}}>✎</button>
+          <button onClick={e=>{e.stopPropagation();deleteGoal(goal.id);}} title="Delete goal" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:17,padding:"2px 5px",lineHeight:1}}>×</button>
           <span style={{color:"var(--color-text-tertiary)",fontSize:11}}>{expanded?"▲":"▼"}</span>
         </div>
       </div>
@@ -72,7 +75,8 @@ export default function GoalCard({ goal, showStatus }) {
                     <div key={r.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:8,background:"var(--color-background-secondary)",marginBottom:5}}>
                       <input type="checkbox" checked={r.done} onChange={()=>toggleResolution(r.id)} style={{accentColor:c.color,width:14,height:14,cursor:"pointer",flexShrink:0}}/>
                       <span style={{flex:1,fontSize:13,color:r.done?"var(--color-text-tertiary)":"var(--color-text-primary)",textDecoration:r.done?"line-through":"none"}}>{r.title}</span>
-                      <button onClick={()=>deleteResolution(r.id)} style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:14,lineHeight:1,padding:"0 2px"}}>×</button>
+                      <button onClick={()=>openEditRes(r)} title="Edit resolution" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:12,lineHeight:1,padding:"0 2px"}}>✎</button>
+                      <button onClick={()=>deleteResolution(r.id)} title="Delete resolution" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:14,lineHeight:1,padding:"0 2px"}}>×</button>
                     </div>
                   ))}
                   <button onClick={()=>openAddRes(goal.id,type)} style={{fontSize:12,color:c.color,background:c.bg,border:`0.5px solid ${c.color}33`,cursor:"pointer",padding:"5px 14px",borderRadius:20,fontWeight:500}}>+ Add {type}</button>

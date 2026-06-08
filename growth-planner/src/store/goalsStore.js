@@ -61,6 +61,11 @@ export const useGoalsStore = create((set, get) => ({
     db.saveResolution(get().userId, res).catch(logFail);
   },
 
+  updateResolution: (res) => {
+    set((s) => ({ resolutions: s.resolutions.map((r) => (r.id === res.id ? res : r)) }));
+    db.saveResolution(get().userId, res).catch(logFail);
+  },
+
   toggleResolution: (id) => {
     const cur = get().resolutions.find((r) => r.id === id);
     if (!cur) return;

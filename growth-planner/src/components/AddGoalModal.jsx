@@ -6,17 +6,25 @@ import { useIsMobile } from "../hooks/useWindowSize";
 
 export default function AddGoalModal() {
   const addGoal = useGoalsStore(s=>s.addGoal);
+  const updateGoal = useGoalsStore(s=>s.updateGoal);
+  const editGoal = useUiStore(s=>s.editGoal);
   const onClose = useUiStore(s=>s.closeAddGoal);
   const isMobile = useIsMobile();
 
-  const [cat,setCat]=useState("career"),[title,setTitle]=useState(""),[desc,setDesc]=useState(""),[why,setWhy]=useState(""),[status,setStatus]=useState("active");
+  const [cat,setCat]=useState(editGoal?.category||"career"),[title,setTitle]=useState(editGoal?.title||""),[desc,setDesc]=useState(editGoal?.description||""),[why,setWhy]=useState(editGoal?.why||""),[status,setStatus]=useState(editGoal?.status||"active");
   const c=CATS[cat];
-  function submit(){ if(!title.trim()) return; addGoal({category:cat,title:title.trim(),description:desc.trim(),why:why.trim(),status}); onClose(); }
+  function submit(){
+    if(!title.trim()) return;
+    const fields={category:cat,title:title.trim(),description:desc.trim(),why:why.trim(),status};
+    if(editGoal) updateGoal({...editGoal,...fields}); // preserves id, reflections, createdAt
+    else addGoal(fields);
+    onClose();
+  }
   return (
     <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",zIndex:200,animation:"overlay-fade .2s ease"}}>
       <div onClick={e=>e.stopPropagation()} style={{background:"#ffffff",borderRadius:isMobile?"20px 20px 0 0":20,padding:isMobile?"24px 20px calc(24px + env(safe-area-inset-bottom))":28,width:isMobile?"100%":"min(480px,94vw)",border:"0.5px solid #e0e0e0",maxHeight:isMobile?"90svh":"92vh",overflowY:"auto",boxSizing:"border-box",color:"#1a1a1a",animation:isMobile?"sheet-up .28s ease":"none"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}>
-          <h2 style={{margin:0,fontSize:17,fontWeight:500}}>New goal</h2>
+          <h2 style={{margin:0,fontSize:17,fontWeight:500}}>{editGoal?"Edit goal":"New goal"}</h2>
           <button onClick={onClose} style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:22,lineHeight:1}}>×</button>
         </div>
 
@@ -43,7 +51,7 @@ export default function AddGoalModal() {
 
         <div style={{display:"flex",gap:10,justifyContent:"flex-end"}}>
           <button onClick={onClose} style={{padding:"9px 20px",borderRadius:10,border:"0.5px solid var(--color-border-secondary)",background:"none",cursor:"pointer",fontSize:13,color:"var(--color-text-secondary)"}}>Cancel</button>
-          <button onClick={submit} disabled={!title.trim()} style={{padding:"9px 24px",borderRadius:10,border:"none",background:title.trim()?c.color:"var(--color-background-secondary)",color:title.trim()?"#fff":"var(--color-text-tertiary)",cursor:title.trim()?"pointer":"default",fontSize:13,fontWeight:500}}>Add goal</button>
+          <button onClick={submit} disabled={!title.trim()} style={{padding:"9px 24px",borderRadius:10,border:"none",background:title.trim()?c.color:"var(--color-background-secondary)",color:title.trim()?"#fff":"var(--color-text-tertiary)",cursor:title.trim()?"pointer":"default",fontSize:13,fontWeight:500}}>{editGoal?"Save changes":"Add goal"}</button>
         </div>
       </div>
     </div>
