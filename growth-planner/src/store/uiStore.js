@@ -3,7 +3,7 @@ import { create } from "zustand";
 // Navigation + modal state. Kept separate from domain data so components can
 // open modals / switch pages without prop-drilling through the tree.
 export const useUiStore = create((set) => ({
-  page: "active", // "active" | "cat:<key>" | "someday" | "achieved" | "monthly" | "weekly" | "review" | "coach"
+  page: "active", // "active" | "cat:<key>" | "someday" | "achieved" | "monthly" | "weekly" | "anytime" | "review" | "coach"
   addGoalOpen: false,
   editGoal: null, // existing goal being edited (reuses AddGoalModal) | null
   addResCtx: null, // { goalId, type, edit? } | null — `edit` holds a resolution being edited

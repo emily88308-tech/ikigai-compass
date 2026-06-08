@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CATS } from "../lib/constants";
+import { CATS, RES_TYPES, RES_TYPE_KEYS } from "../lib/constants";
 import { useGoalsStore } from "../store/goalsStore";
 import { useUiStore } from "../store/uiStore";
 import { useIsMobile } from "../hooks/useWindowSize";
@@ -38,9 +38,9 @@ export default function AddResolutionModal() {
         <select value={goalId} onChange={e=>setGoalId(e.target.value)} style={{display:"block",width:"100%",marginBottom:18,fontSize:13,padding:"9px 12px",borderRadius:10,border:"0.5px solid var(--color-border-secondary)",background:"var(--color-background-secondary)",color:"var(--color-text-primary)",boxSizing:"border-box"}}>
           {selectableGoals.map(g=><option key={g.id} value={g.id}>{CATS[g.category].label} — {g.title}</option>)}
         </select>
-        <div style={{fontSize:11,fontWeight:500,color:"var(--color-text-secondary)",letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:8}}>Timeframe</div>
+        <div style={{fontSize:11,fontWeight:500,color:"var(--color-text-secondary)",letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:8}}>When</div>
         <div style={{display:"flex",gap:8,marginBottom:18}}>
-          {["monthly","weekly"].map(t=><button key={t} onClick={()=>setType(t)} style={{flex:1,padding:"9px 0",borderRadius:10,border:`1.5px solid ${type===t?c.color:"var(--color-border-tertiary)"}`,background:type===t?c.bg:"transparent",color:type===t?c.color:"var(--color-text-secondary)",cursor:"pointer",fontSize:13,fontWeight:type===t?500:400}}>{t==="monthly"?"Monthly":"Weekly"}</button>)}
+          {RES_TYPE_KEYS.map(t=><button key={t} onClick={()=>setType(t)} style={{flex:1,padding:"9px 0",borderRadius:10,border:`1.5px solid ${type===t?c.color:"var(--color-border-tertiary)"}`,background:type===t?c.bg:"transparent",color:type===t?c.color:"var(--color-text-secondary)",cursor:"pointer",fontSize:13,fontWeight:type===t?500:400}}>{RES_TYPES[t].label}</button>)}
         </div>
         <div style={{fontSize:11,fontWeight:500,color:"var(--color-text-secondary)",letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:6}}>Resolution</div>
         <input autoFocus value={title} onChange={e=>setTitle(e.target.value)} onKeyDown={e=>e.key==="Enter"&&submit()} placeholder="e.g. Read one book this month" style={{display:"block",width:"100%",marginBottom:24,fontSize:14,padding:"10px 13px",borderRadius:10,border:"0.5px solid var(--color-border-secondary)",background:"var(--color-background-secondary)",color:"var(--color-text-primary)",boxSizing:"border-box"}}/>

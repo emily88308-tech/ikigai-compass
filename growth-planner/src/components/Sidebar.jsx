@@ -19,8 +19,8 @@ export default function Sidebar() {
       <div style={{padding:"18px 16px 16px"}}>
         <div style={{fontWeight:500,fontSize:15,color:"var(--color-text-primary)",marginBottom:3}}>Growth planner</div>
         <div style={{fontSize:12,color:"var(--color-text-secondary)",marginBottom:12}}>Goals · Resolutions · Wisdom</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6}}>
-          {[["Active",activeGoals.length,"#7F77DD"],["Monthly",resolutions.filter(r=>r.type==="monthly").length,"#1D9E75"],["Weekly",resolutions.filter(r=>r.type==="weekly").length,"#378ADD"]].map(([l,n,c])=>(
+        <div style={{display:"grid",gridTemplateColumns:"repeat(4, 1fr)",gap:6}}>
+          {[["Active",activeGoals.length,"#7F77DD"],["Monthly",resolutions.filter(r=>r.type==="monthly").length,"#1D9E75"],["Weekly",resolutions.filter(r=>r.type==="weekly").length,"#378ADD"],["Anytime",resolutions.filter(r=>r.type==="anytime").length,"#BA7517"]].map(([l,n,c])=>(
             <div key={l} style={{background:"var(--color-background-primary)",borderRadius:8,padding:"7px 6px",textAlign:"center",border:"0.5px solid var(--color-border-tertiary)"}}>
               <div style={{fontSize:16,fontWeight:500,color:c}}>{n}</div>
               <div style={{fontSize:10,color:"var(--color-text-tertiary)"}}>{l}</div>
@@ -40,6 +40,7 @@ export default function Sidebar() {
       <div style={{padding:"14px 16px 5px",fontSize:10,fontWeight:500,color:"var(--color-text-tertiary)",textTransform:"uppercase",letterSpacing:"0.06em"}}>Resolutions</div>
       <SideNavBtn id="monthly" label="Monthly" active={page==="monthly"} onClick={setPage}/>
       <SideNavBtn id="weekly" label="Weekly" active={page==="weekly"} onClick={setPage}/>
+      <SideNavBtn id="anytime" label="Anytime" active={page==="anytime"} onClick={setPage}/>
 
       <div style={{padding:"14px 16px 5px",fontSize:10,fontWeight:500,color:"var(--color-text-tertiary)",textTransform:"uppercase",letterSpacing:"0.06em"}}>Reflect</div>
       <SideNavBtn id="review" label="Review" active={page==="review"} onClick={setPage}/>

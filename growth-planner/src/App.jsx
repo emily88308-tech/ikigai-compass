@@ -20,7 +20,7 @@ import Toast from "./components/Toast";
 function PageContent({ page }) {
   if (page === "coach") return <AICoach/>;
   if (page === "review") return <ReviewPane/>;
-  if (page === "monthly" || page === "weekly") return <ResolutionsPane type={page}/>;
+  if (page === "monthly" || page === "weekly" || page === "anytime") return <ResolutionsPane type={page}/>;
   if (page === "someday") return <GoalListPane title="Someday" subtitle="Goals parked for later — revisit when the time is right" filterStatus="someday" accentColor="#BA7517" emptyIcon="◷" emptyMsg={"No goals here yet.\nPark a goal as Someday when you're not ready to pursue it."}/>;
   if (page === "achieved") return <GoalListPane title="Achieved" subtitle="Goals you've accomplished — a record of your growth" filterStatus="achieved" accentColor="#1D9E75" emptyIcon="✓" emptyMsg={"Nothing here yet.\nMark a goal as Achieved when you reach it."}/>;
   return <ActiveGoalsView/>;

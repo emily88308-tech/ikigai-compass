@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CATS, STATUS } from "../lib/constants";
+import { CATS, STATUS, RES_TYPES, RES_TYPE_KEYS } from "../lib/constants";
 import { uid, today } from "../lib/utils";
 import { useGoalsStore } from "../store/goalsStore";
 import { useUiStore } from "../store/uiStore";
@@ -18,7 +18,7 @@ export default function GoalCard({ goal, showStatus }) {
 
   const c=CATS[goal.category], s=STATUS[goal.status||"active"];
   const myRes=allRes.filter(r=>r.goalId===goal.id);
-  const monthly=myRes.filter(r=>r.type==="monthly"),weekly=myRes.filter(r=>r.type==="weekly");
+  const resByType=(t)=>myRes.filter(r=>r.type===t);
   const done=myRes.filter(r=>r.done).length,pct=myRes.length?Math.round(done/myRes.length*100):null;
   const reflections=goal.reflections||[];
 
@@ -38,8 +38,7 @@ export default function GoalCard({ goal, showStatus }) {
           </div>
           <div style={{fontSize:15,fontWeight:500,color:"var(--color-text-primary)",lineHeight:1.3,marginBottom:5,textDecoration:goal.status==="achieved"?"line-through":"none"}}>{goal.title}</div>
           <div style={{fontSize:12,color:"var(--color-text-secondary)",display:"flex",gap:10,flexWrap:"wrap"}}>
-            {monthly.length>0&&<span style={{color:c.color,fontWeight:500}}>{monthly.length} monthly</span>}
-            {weekly.length>0&&<span style={{color:c.color,fontWeight:500}}>{weekly.length} weekly</span>}
+            {RES_TYPE_KEYS.map(t=>{const n=resByType(t).length;return n>0&&<span key={t} style={{color:c.color,fontWeight:500}}>{n} {RES_TYPES[t].label.toLowerCase()}</span>;})}
             {myRes.length===0&&<span>No resolutions</span>}
           </div>
         </div>
@@ -65,8 +64,8 @@ export default function GoalCard({ goal, showStatus }) {
           )}
 
           {isActive&&<div style={{padding:"14px 16px 0"}}>
-            {["monthly","weekly"].map((type)=>{
-              const list=type==="monthly"?monthly:weekly;
+            {RES_TYPE_KEYS.map((type)=>{
+              const list=resByType(type);
               return (
                 <div key={type} style={{marginBottom:12}}>
                   <div style={{fontSize:11,fontWeight:500,color:"var(--color-text-secondary)",textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:7}}>{type}</div>

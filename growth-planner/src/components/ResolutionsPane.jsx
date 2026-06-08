@@ -1,4 +1,4 @@
-import { CATS } from "../lib/constants";
+import { CATS, RES_TYPES } from "../lib/constants";
 import { useGoalsStore } from "../store/goalsStore";
 import { useUiStore } from "../store/uiStore";
 
@@ -17,7 +17,7 @@ export default function ResolutionsPane({ type }) {
     <div style={{flex:1,display:"flex",flexDirection:"column",minWidth:0,height:"100%"}}>
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:18,flexShrink:0}}>
         <div>
-          <h2 style={{margin:0,fontSize:17,fontWeight:500}}>{type==="monthly"?"Monthly":"Weekly"} resolutions</h2>
+          <h2 style={{margin:0,fontSize:17,fontWeight:500}}>{RES_TYPES[type].label} resolutions</h2>
           <p style={{margin:"3px 0 0",fontSize:12,color:"var(--color-text-secondary)"}}>{done} of {filtered.length} completed · active goals only</p>
         </div>
         <button onClick={()=>openAddRes(null,type)} style={{padding:"7px 18px",borderRadius:8,border:"none",background:"#7F77DD",color:"#fff",cursor:"pointer",fontSize:13,fontWeight:500,flexShrink:0}}>+ Add</button>
