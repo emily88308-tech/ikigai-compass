@@ -24,7 +24,8 @@ function PageContent({ page }) {
   if (page === "review") return <ReviewPane/>;
   if (page === "monthly" || page === "weekly" || page === "anytime") return <ResolutionsPane type={page}/>;
   if (page === "someday") return <GoalListPane title="Someday" subtitle="Goals parked for later — revisit when the time is right" filterStatus="someday" accentColor="#BA7517" emptyIcon="◷" emptyMsg={"No goals here yet.\nPark a goal as Someday when you're not ready to pursue it."}/>;
-  if (page === "achieved") return <GoalListPane title="Achieved" subtitle="Goals you've accomplished — a record of your growth" filterStatus="achieved" accentColor="#1D9E75" emptyIcon="✓" emptyMsg={"Nothing here yet.\nMark a goal as Achieved when you reach it."}/>;
+  if (page === "achieved") return <GoalListPane title="Done" subtitle="Goals you've completed — a record of your growth" filterStatus="achieved" accentColor="#1D9E75" emptyIcon="✓" emptyMsg={"Nothing here yet.\nMark a goal as Done when you complete it."}/>;
+  if (page === "archived") return <GoalListPane title="Archived" subtitle="Ongoing goals you've retired — kept for history, out of your active view" filterStatus="archived" accentColor="#6E7787" emptyIcon="▤" emptyMsg={"Nothing archived.\nArchive an ongoing goal when you stop tracking it."}/>;
   return <ActiveGoalsView/>;
 }
 

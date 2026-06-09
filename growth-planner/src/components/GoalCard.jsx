@@ -57,7 +57,8 @@ export default function GoalCard({ goal, showStatus }) {
       {expanded&&(
         <div style={{borderTop:"0.5px solid var(--color-border-tertiary)"}}>
           <div style={{padding:"14px 16px 0"}}>
-            <StatusPicker current={goal.status||"active"} onChange={st=>updateGoal({...goal,status:st})}/>
+            <div style={{fontSize:11,fontWeight:500,color:"var(--color-text-secondary)",textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:8}}>Status</div>
+            <StatusPicker current={goal.status||"active"} kind={goal.kind} onChange={st=>updateGoal({...goal,status:st})}/>
           </div>
 
           {goal.description&&<div style={{padding:"0 16px 0",fontSize:13,color:"var(--color-text-secondary)",lineHeight:1.65}}>{goal.description}</div>}

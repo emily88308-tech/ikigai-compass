@@ -13,7 +13,8 @@ export default function CategoryPills() {
     { id: "active", label: "All", color: ACCENT },
     ...CAT_KEYS.map((k) => ({ id: `cat:${k}`, label: CATS[k].label, color: CATS[k].color, dot: true })),
     { id: "someday", label: "Someday", color: "#BA7517" },
-    { id: "achieved", label: "Achieved", color: "#1D9E75" },
+    { id: "achieved", label: "Done", color: "#1D9E75" },
+    { id: "archived", label: "Archived", color: "#6E7787" },
   ];
 
   return (

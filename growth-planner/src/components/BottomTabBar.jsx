@@ -20,7 +20,7 @@ const CoachIcon = () => <Icon d={<><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L4 21l1.
 
 const TABS = [
   { key: "goals", label: "Goals", page: "active", Icon: GoalsIcon,
-    match: (p) => p === "active" || p.startsWith("cat:") || p === "someday" || p === "achieved" },
+    match: (p) => p === "active" || p.startsWith("cat:") || p === "someday" || p === "achieved" || p === "archived" },
   { key: "monthly", label: "Monthly", page: "monthly", Icon: MonthlyIcon, match: (p) => p === "monthly" },
   { key: "weekly", label: "Weekly", page: "weekly", Icon: WeeklyIcon, match: (p) => p === "weekly" },
   { key: "anytime", label: "Anytime", page: "anytime", Icon: AnytimeIcon, match: (p) => p === "anytime" },

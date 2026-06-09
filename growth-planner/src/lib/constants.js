@@ -9,11 +9,19 @@ export const CATS = {
 
 export const CAT_KEYS = Object.keys(CATS);
 
+// "achieved" is the terminal state for finite (outcome) goals — labelled "Done".
+// "archived" is the terminal state for ongoing goals — retired, kept for history.
 export const STATUS = {
   active:   { label: "Active",   color: "#7F77DD", bg: "#EEEDFE" },
   someday:  { label: "Someday",  color: "#BA7517", bg: "#FAEEDA" },
-  achieved: { label: "Achieved", color: "#1D9E75", bg: "#E1F5EE" },
+  achieved: { label: "Done",     color: "#1D9E75", bg: "#E1F5EE" },
+  archived: { label: "Archived", color: "#6E7787", bg: "#EEF0F3" },
 };
+
+// The status options a goal can move through depend on its kind: ongoing goals
+// never "finish" (they Archive); outcome goals complete (they're Done).
+export const statusesForKind = (kind) =>
+  kind === "ongoing" ? ["active", "someday", "archived"] : ["active", "someday", "achieved"];
 
 // Goal kinds. "outcome" goals have a finish line (can be completed, may carry a
 // target date); "ongoing" goals have no end — they're measured by the output

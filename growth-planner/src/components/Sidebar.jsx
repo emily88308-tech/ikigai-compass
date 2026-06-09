@@ -35,7 +35,8 @@ export default function Sidebar() {
 
       <div style={{padding:"14px 16px 5px",fontSize:10,fontWeight:500,color:"var(--color-text-tertiary)",textTransform:"uppercase",letterSpacing:"0.06em"}}>Backlog</div>
       <SideNavBtn id="someday" label="Someday" count={goals.filter(g=>g.status==="someday").length} active={page==="someday"} onClick={setPage}/>
-      <SideNavBtn id="achieved" label="Achieved" count={goals.filter(g=>g.status==="achieved").length} active={page==="achieved"} onClick={setPage}/>
+      <SideNavBtn id="achieved" label="Done" count={goals.filter(g=>g.status==="achieved").length} active={page==="achieved"} onClick={setPage}/>
+      <SideNavBtn id="archived" label="Archived" count={goals.filter(g=>g.status==="archived").length} active={page==="archived"} onClick={setPage}/>
 
       <div style={{padding:"14px 16px 5px",fontSize:10,fontWeight:500,color:"var(--color-text-tertiary)",textTransform:"uppercase",letterSpacing:"0.06em"}}>Resolutions</div>
       <SideNavBtn id="monthly" label="Monthly" active={page==="monthly"} onClick={setPage}/>

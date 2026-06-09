@@ -17,7 +17,7 @@ export default function MobileLayout({ children }) {
   const { height } = useWindowSize();
 
   const showPills =
-    page === "active" || page.startsWith("cat:") || page === "someday" || page === "achieved";
+    page === "active" || page.startsWith("cat:") || page === "someday" || page === "achieved" || page === "archived";
 
   return (
     <div style={{

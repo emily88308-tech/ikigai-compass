@@ -43,8 +43,8 @@ export default function AchievementsView() {
   }
 
   const tiles = [
-    ["Goals achieved", achieved.length, ACCENT],
-    [`Achieved in ${thisYear}`, achievedThisYear, "#7F77DD"],
+    ["Goals done", achieved.length, ACCENT],
+    [`Done in ${thisYear}`, achievedThisYear, "#7F77DD"],
     ["Resolutions done", doneRes.length, "#378ADD"],
     ["Active goals", activeCount, "#BA7517"],
   ];
@@ -72,7 +72,7 @@ export default function AchievementsView() {
         {nothingYet ? (
           <div style={{textAlign:"center",padding:"40px 20px"}}>
             <div style={{fontSize:34,marginBottom:12,opacity:.2}}>✦</div>
-            <div style={{fontSize:14,color:"var(--color-text-tertiary)",lineHeight:1.7}}>Nothing to summarize yet.<br/>Complete a resolution or mark a goal Achieved, and it'll show up here.</div>
+            <div style={{fontSize:14,color:"var(--color-text-tertiary)",lineHeight:1.7}}>Nothing to summarize yet.<br/>Complete a resolution or mark a goal Done, and it'll show up here.</div>
           </div>
         ) : (
           <>
