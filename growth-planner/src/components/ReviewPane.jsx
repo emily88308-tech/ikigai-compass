@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CATS } from "../lib/constants";
 import { useGoalsStore } from "../store/goalsStore";
+import { isDoneNow } from "../lib/recurrence";
 
 export default function ReviewPane() {
   const goals = useGoalsStore(s=>s.goals);
@@ -11,7 +12,7 @@ export default function ReviewPane() {
   const [type,setType]=useState("monthly"),[note,setNote]=useState("");
   const activeIds=new Set(goals.filter(g=>(g.status||"active")==="active").map(g=>g.id));
   const filtered=resolutions.filter(r=>r.type===type&&activeIds.has(r.goalId));
-  const done=filtered.filter(r=>r.done).length,total=filtered.length,pct=total?Math.round(done/total*100):0;
+  const done=filtered.filter(isDoneNow).length,total=filtered.length,pct=total?Math.round(done/total*100):0;
   const pastReviews=reviews.filter(r=>r.type===type).sort((a,b)=>b.createdAt-a.createdAt);
   function submit(){ if(!note.trim()) return; onSaveReview({type,note:note.trim(),done,total,pct}); setNote(""); }
   return (
@@ -41,10 +42,11 @@ export default function ReviewPane() {
           {filtered.length===0?<div style={{fontSize:12,color:"var(--color-text-tertiary)",fontStyle:"italic"}}>No {type} resolutions from active goals.</div>
           :filtered.map(r=>{
             const goal=goals.find(g=>g.id===r.goalId),c=goal?CATS[goal.category]:{color:"#888",bg:"#f0f0f0"};
+            const dn=isDoneNow(r);
             return (
               <div key={r.id} style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}>
-                <span style={{fontSize:14,color:r.done?"#1D9E75":"var(--color-text-tertiary)"}}>{r.done?"✓":"○"}</span>
-                <span style={{flex:1,fontSize:13,color:r.done?"var(--color-text-secondary)":"var(--color-text-primary)",textDecoration:r.done?"line-through":"none"}}>{r.title}</span>
+                <span style={{fontSize:14,color:dn?"#1D9E75":"var(--color-text-tertiary)"}}>{dn?"✓":"○"}</span>
+                <span style={{flex:1,fontSize:13,color:dn?"var(--color-text-secondary)":"var(--color-text-primary)",textDecoration:dn?"line-through":"none"}}>{r.title}</span>
                 {goal&&<span style={{fontSize:10,padding:"1px 8px",borderRadius:10,background:c.bg,color:c.color,whiteSpace:"nowrap"}}>{CATS[goal.category].short}</span>}
               </div>
             );

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CATS, STATUS, RES_TYPES, RES_TYPE_KEYS, GOAL_KINDS } from "../lib/constants";
 import { uid, today, fmtTs, fmtDateStr, todayISO } from "../lib/utils";
+import { isDoneNow } from "../lib/recurrence";
 import { useGoalsStore } from "../store/goalsStore";
 import { useUiStore } from "../store/uiStore";
 import StatusPicker from "./StatusPicker";
@@ -19,7 +20,7 @@ export default function GoalCard({ goal, showStatus }) {
   const c=CATS[goal.category], s=STATUS[goal.status||"active"];
   const myRes=allRes.filter(r=>r.goalId===goal.id);
   const resByType=(t)=>myRes.filter(r=>r.type===t);
-  const done=myRes.filter(r=>r.done).length,pct=myRes.length?Math.round(done/myRes.length*100):null;
+  const done=myRes.filter(isDoneNow).length,pct=myRes.length?Math.round(done/myRes.length*100):null;
   const reflections=goal.reflections||[];
 
   function addReflection(){ if(!newNote.trim()) return; updateGoal({...goal,reflections:[...reflections,{id:uid(),text:newNote.trim(),date:today()}]}); setNewNote(""); }
@@ -76,14 +77,14 @@ export default function GoalCard({ goal, showStatus }) {
                 <div key={type} style={{marginBottom:12}}>
                   <div style={{fontSize:11,fontWeight:500,color:"var(--color-text-secondary)",textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:7}}>{type}</div>
                   {list.length===0&&<div style={{fontSize:12,color:"var(--color-text-tertiary)",fontStyle:"italic",marginBottom:6}}>No {type} resolutions</div>}
-                  {list.map(r=>(
+                  {list.map(r=>{const dn=isDoneNow(r);return (
                     <div key={r.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:8,background:"var(--color-background-secondary)",marginBottom:5}}>
-                      <input type="checkbox" checked={r.done} onChange={()=>toggleResolution(r.id)} style={{accentColor:c.color,width:14,height:14,cursor:"pointer",flexShrink:0}}/>
-                      <span style={{flex:1,fontSize:13,color:r.done?"var(--color-text-tertiary)":"var(--color-text-primary)",textDecoration:r.done?"line-through":"none"}}>{r.title}</span>
+                      <input type="checkbox" checked={dn} onChange={()=>toggleResolution(r.id)} style={{accentColor:c.color,width:14,height:14,cursor:"pointer",flexShrink:0}}/>
+                      <span style={{flex:1,fontSize:13,color:dn?"var(--color-text-tertiary)":"var(--color-text-primary)",textDecoration:dn?"line-through":"none"}}>{r.title}</span>
                       <button onClick={()=>openEditRes(r)} title="Edit resolution" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:12,lineHeight:1,padding:"0 2px"}}>✎</button>
                       <button onClick={()=>deleteResolution(r.id)} title="Delete resolution" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:14,lineHeight:1,padding:"0 2px"}}>×</button>
                     </div>
-                  ))}
+                  );})}
                   <button onClick={()=>openAddRes(goal.id,type)} style={{fontSize:12,color:c.color,background:c.bg,border:`0.5px solid ${c.color}33`,cursor:"pointer",padding:"5px 14px",borderRadius:20,fontWeight:500}}>+ Add {type}</button>
                 </div>
               );

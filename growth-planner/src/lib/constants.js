@@ -15,7 +15,7 @@ export const STATUS = {
   active:   { label: "Active",   color: "#7F77DD", bg: "#EEEDFE" },
   someday:  { label: "Someday",  color: "#BA7517", bg: "#FAEEDA" },
   achieved: { label: "Done",     color: "#1D9E75", bg: "#E1F5EE" },
-  archived: { label: "Archive", color: "#6E7787", bg: "#EEF0F3" },
+  archived: { label: "Archived", color: "#6E7787", bg: "#EEF0F3" },
 };
 
 // The status options a goal can move through depend on its kind: ongoing goals
@@ -40,3 +40,13 @@ export const RES_TYPES = {
   anytime: { label: "Anytime", color: "#BA7517" },
 };
 export const RES_TYPE_KEYS = Object.keys(RES_TYPES);
+
+// Effort weight per resolution — used to weight the Life Balance score so that
+// a heavy monthly task counts for more than a light weekly one.
+export const EFFORTS = {
+  light:  { label: "Light",  weight: 1, desc: "Quick" },
+  medium: { label: "Medium", weight: 2, desc: "Some work" },
+  heavy:  { label: "Heavy",  weight: 3, desc: "Big lift" },
+};
+export const EFFORT_KEYS = Object.keys(EFFORTS);
+export const effortWeight = (e) => (EFFORTS[e] || EFFORTS.medium).weight;

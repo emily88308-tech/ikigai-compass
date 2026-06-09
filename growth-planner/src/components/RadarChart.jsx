@@ -1,4 +1,5 @@
 import { CATS, CAT_KEYS } from "../lib/constants";
+import { isDoneNow } from "../lib/recurrence";
 
 export default function RadarChart({ goals, resolutions }) {
   const active = goals.filter(g=>g.status==="active");
@@ -8,7 +9,7 @@ export default function RadarChart({ goals, resolutions }) {
     if(!cg.length) return 0;
     const cr=resolutions.filter(r=>cg.some(g=>g.id===r.goalId));
     if(!cr.length) return 0.13;
-    return Math.max(0.08,cr.filter(r=>r.done).length/cr.length);
+    return Math.max(0.08,cr.filter(isDoneNow).length/cr.length);
   });
   function pt(i,r){ const a=-Math.PI/2+(2*Math.PI/n)*i; return [cx+r*Math.cos(a),cy+r*Math.sin(a)]; }
   function poly(pts){ return pts.map((p,i)=>`${i?"L":"M"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ")+"Z"; }

@@ -2,6 +2,7 @@ import { create } from "zustand";
 import * as db from "../lib/db";
 import { useUiStore } from "./uiStore";
 import { uid, today } from "../lib/utils";
+import { toggleCompletion, withDone } from "../lib/recurrence";
 
 // A failed write means the change lives only in local state and will vanish on
 // refresh — so we make it loud (visible banner) instead of swallowing it.
@@ -66,20 +67,22 @@ export const useGoalsStore = create((set, get) => ({
   },
 
   addResolution: (fields) => {
-    const res = { id: uid(), done: false, createdAt: Date.now(), ...fields };
+    const res = withDone({ id: uid(), completions: [], effort: "medium", createdAt: Date.now(), ...fields });
     set((s) => ({ resolutions: [...s.resolutions, res] }));
     db.saveResolution(get().userId, res).catch(logFail);
   },
 
   updateResolution: (res) => {
-    set((s) => ({ resolutions: s.resolutions.map((r) => (r.id === res.id ? res : r)) }));
-    db.saveResolution(get().userId, res).catch(logFail);
+    // Recompute done in case the type changed (its period definition changed).
+    const next = withDone(res);
+    set((s) => ({ resolutions: s.resolutions.map((r) => (r.id === next.id ? next : r)) }));
+    db.saveResolution(get().userId, next).catch(logFail);
   },
 
   toggleResolution: (id) => {
     const cur = get().resolutions.find((r) => r.id === id);
     if (!cur) return;
-    const next = { ...cur, done: !cur.done };
+    const next = toggleCompletion(cur); // logs/clears a dated completion for the current period
     set((s) => ({ resolutions: s.resolutions.map((r) => (r.id === id ? next : r)) }));
     db.saveResolution(get().userId, next).catch(logFail);
   },

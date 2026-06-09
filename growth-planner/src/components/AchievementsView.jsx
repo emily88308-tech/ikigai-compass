@@ -12,25 +12,28 @@ export default function AchievementsView() {
   const goals = useGoalsStore(s=>s.goals);
   const resolutions = useGoalsStore(s=>s.resolutions);
 
-  const doneRes = resolutions.filter(r=>r.done);
+  // "Output" = cumulative completions from the log (every time a resolution was
+  // ticked), not just whether it's done in the current period.
+  const compCount = (r) => (r.completions || []).length;
+  const totalCompletions = resolutions.reduce((n,r)=>n+compCount(r), 0);
   const achieved = goals.filter(g=>g.status==="achieved")
     .sort((a,b)=>(b.achievedAt||0)-(a.achievedAt||0));
   const activeCount = goals.filter(g=>(g.status||"active")==="active").length;
   const thisYear = new Date().getFullYear();
   const achievedThisYear = achieved.filter(g=>g.achievedAt && new Date(g.achievedAt).getFullYear()===thisYear).length;
 
-  // Completed resolutions per life area — counts across goals of every status,
-  // since output accumulates whether or not the parent goal is "done".
+  // Completions per life area — accumulated across goals of every status, since
+  // output persists whether or not the parent goal is still active.
   const byCat = CAT_KEYS.map(k=>{
     const ids = new Set(goals.filter(g=>g.category===k).map(g=>g.id));
-    const rs = resolutions.filter(r=>ids.has(r.goalId));
-    return { k, done: rs.filter(r=>r.done).length, total: rs.length };
+    const done = resolutions.filter(r=>ids.has(r.goalId)).reduce((n,r)=>n+compCount(r), 0);
+    return { k, done };
   });
   const maxDone = Math.max(1, ...byCat.map(c=>c.done));
 
   // Ongoing goals ranked by output produced.
   const ongoing = goals.filter(g=>g.kind==="ongoing").map(g=>({
-    g, done: resolutions.filter(r=>r.goalId===g.id && r.done).length,
+    g, done: resolutions.filter(r=>r.goalId===g.id).reduce((n,r)=>n+compCount(r), 0),
   })).sort((a,b)=>b.done-a.done);
 
   // Group the achieved goals into month buckets, preserving newest-first order.
@@ -45,11 +48,11 @@ export default function AchievementsView() {
   const tiles = [
     ["Goals done", achieved.length, ACCENT],
     [`Done in ${thisYear}`, achievedThisYear, "#7F77DD"],
-    ["Resolutions done", doneRes.length, "#378ADD"],
+    ["Completions", totalCompletions, "#378ADD"],
     ["Active goals", activeCount, "#BA7517"],
   ];
 
-  const nothingYet = achieved.length===0 && doneRes.length===0;
+  const nothingYet = achieved.length===0 && totalCompletions===0;
 
   return (
     <div style={{flex:1,display:"flex",flexDirection:"column",minWidth:0,height:"100%"}}>
@@ -82,15 +85,15 @@ export default function AchievementsView() {
             {/* Output by life area */}
             <div style={{background:"var(--color-background-secondary)",borderRadius:14,padding:16,marginBottom:20}}>
               <div style={{fontSize:13,fontWeight:500,color:"var(--color-text-primary)",marginBottom:12}}>Output by life area</div>
-              {byCat.every(c=>c.total===0)
-                ? <div style={{fontSize:12,color:"var(--color-text-tertiary)",fontStyle:"italic"}}>No resolutions yet.</div>
-                : byCat.map(({k,done,total})=>{
+              {byCat.every(c=>c.done===0)
+                ? <div style={{fontSize:12,color:"var(--color-text-tertiary)",fontStyle:"italic"}}>No completions yet.</div>
+                : byCat.map(({k,done})=>{
                     const c=CATS[k];
                     return (
                       <div key={k} style={{marginBottom:9}}>
                         <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
                           <span style={{fontSize:11,color:c.color,fontWeight:500}}>{c.label}</span>
-                          <span style={{fontSize:11,color:"var(--color-text-tertiary)"}}>{done} done{total?` / ${total}`:""}</span>
+                          <span style={{fontSize:11,color:"var(--color-text-tertiary)"}}>{done} completion{done!==1?"s":""}</span>
                         </div>
                         <div style={{height:5,background:"var(--color-border-tertiary)",borderRadius:3,overflow:"hidden"}}>
                           <div style={{height:"100%",width:`${(done/maxDone)*100}%`,background:c.color,borderRadius:3,transition:"width .4s"}}/>

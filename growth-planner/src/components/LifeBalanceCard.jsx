@@ -1,6 +1,7 @@
 import { CATS, CAT_KEYS } from "../lib/constants";
 import { useGoalsStore } from "../store/goalsStore";
 import { useIsMobile } from "../hooks/useWindowSize";
+import { isDoneNow } from "../lib/recurrence";
 import RadarChart from "./RadarChart";
 
 export default function LifeBalanceCard() {
@@ -17,7 +18,7 @@ export default function LifeBalanceCard() {
         {CAT_KEYS.map(k=>{
           const cg=activeGoals.filter(g=>g.category===k);
           const cr=resolutions.filter(r=>cg.some(g=>g.id===r.goalId));
-          const pct=cr.length?Math.round(cr.filter(r=>r.done).length/cr.length*100):0;
+          const pct=cr.length?Math.round(cr.filter(isDoneNow).length/cr.length*100):0;
           const c=CATS[k];
           return (
             <div key={k} style={{marginBottom:7}}>

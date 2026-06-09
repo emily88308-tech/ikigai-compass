@@ -16,11 +16,13 @@ const rowToGoal = (r) => ({
 
 const resToRow = (r, userId) => ({
   id: r.id, user_id: userId, goal_id: r.goalId, type: r.type,
-  title: r.title, done: !!r.done, created_at: r.createdAt,
+  title: r.title, done: !!r.done, completions: r.completions || [],
+  effort: r.effort || "medium", created_at: r.createdAt,
 });
 const rowToRes = (r) => ({
   id: r.id, goalId: r.goal_id, type: r.type, title: r.title,
-  done: !!r.done, createdAt: r.created_at,
+  done: !!r.done, completions: r.completions || [], effort: r.effort || "medium",
+  createdAt: r.created_at,
 });
 
 const reviewToRow = (r, userId) => ({

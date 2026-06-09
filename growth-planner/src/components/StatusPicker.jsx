@@ -1,6 +1,9 @@
 import { STATUS, statusesForKind } from "../lib/constants";
 
 const ICON = { active: "▶", someday: "◷", achieved: "✓", archived: "▤" };
+// In the dropdown the option reads as the action being taken, so "archived"
+// (the stored status) shows as the verb "Archive".
+const OPTION_LABEL = { archived: "Archive" };
 
 // A compact dropdown for a goal's status. Options are scoped to the goal's kind
 // (ongoing → Archived, outcome → Done) and the control is tinted to the current
@@ -22,7 +25,7 @@ export default function StatusPicker({ current, kind, onChange }) {
         }}
       >
         {opts.map((k)=>(
-          <option key={k} value={k}>{ICON[k]} {STATUS[k].label}</option>
+          <option key={k} value={k}>{ICON[k]} {OPTION_LABEL[k] || STATUS[k].label}</option>
         ))}
       </select>
       <span style={{position:"absolute",right:13,top:"50%",transform:"translateY(-50%)",pointerEvents:"none",fontSize:10,color:v.color}}>▾</span>

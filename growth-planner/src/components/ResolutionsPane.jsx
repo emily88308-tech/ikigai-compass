@@ -1,6 +1,7 @@
 import { CATS, RES_TYPES } from "../lib/constants";
 import { useGoalsStore } from "../store/goalsStore";
 import { useUiStore } from "../store/uiStore";
+import { isDoneNow } from "../lib/recurrence";
 
 export default function ResolutionsPane({ type }) {
   const goals = useGoalsStore(s=>s.goals);
@@ -12,7 +13,7 @@ export default function ResolutionsPane({ type }) {
 
   const activeGoalIds=new Set(goals.filter(g=>(g.status||"active")==="active").map(g=>g.id));
   const filtered=resolutions.filter(r=>r.type===type&&activeGoalIds.has(r.goalId));
-  const done=filtered.filter(r=>r.done).length;
+  const done=filtered.filter(isDoneNow).length;
   return (
     <div style={{flex:1,display:"flex",flexDirection:"column",minWidth:0,height:"100%"}}>
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:18,flexShrink:0}}>
@@ -30,11 +31,12 @@ export default function ResolutionsPane({ type }) {
           </div>
         ):filtered.map(r=>{
           const goal=goals.find(g=>g.id===r.goalId),c=goal?CATS[goal.category]:{color:"#888",bg:"#f0f0f0"};
+          const dn=isDoneNow(r);
           return (
             <div key={r.id} style={{background:"var(--color-background-primary)",border:"0.5px solid var(--color-border-tertiary)",borderRadius:12,padding:"12px 14px",marginBottom:10,display:"flex",alignItems:"center",gap:12,borderLeft:`3px solid ${c.color}`}}>
-              <input type="checkbox" checked={r.done} onChange={()=>onToggle(r.id)} style={{accentColor:c.color,width:15,height:15,cursor:"pointer",flexShrink:0}}/>
+              <input type="checkbox" checked={dn} onChange={()=>onToggle(r.id)} style={{accentColor:c.color,width:15,height:15,cursor:"pointer",flexShrink:0}}/>
               <div style={{flex:1,minWidth:0}}>
-                <div style={{fontSize:14,color:r.done?"var(--color-text-tertiary)":"var(--color-text-primary)",textDecoration:r.done?"line-through":"none",marginBottom:4,lineHeight:1.3}}>{r.title}</div>
+                <div style={{fontSize:14,color:dn?"var(--color-text-tertiary)":"var(--color-text-primary)",textDecoration:dn?"line-through":"none",marginBottom:4,lineHeight:1.3}}>{r.title}</div>
                 {goal&&<span style={{fontSize:11,padding:"2px 10px",borderRadius:20,background:c.bg,color:c.color,fontWeight:500}}>{goal.title}</span>}
               </div>
               <button onClick={()=>openEditRes(r)} title="Edit resolution" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:13,padding:"2px 4px",flexShrink:0}}>✎</button>

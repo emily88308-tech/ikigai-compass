@@ -31,12 +31,25 @@ create table if not exists public.resolutions (
   id          text primary key,
   user_id     uuid not null references auth.users (id) on delete cascade,
   goal_id     text not null references public.goals (id) on delete cascade,
-  type        text not null,                         -- 'monthly' | 'weekly'
+  type        text not null,                         -- 'monthly' | 'weekly' | 'anytime'
   title       text not null,
-  done        boolean not null default false,
+  done        boolean not null default false,        -- denormalised cache of "done in current period"
+  completions jsonb not null default '[]'::jsonb,    -- [{ date:'YYYY-MM-DD', ts:epochMs }] completion log
+  effort      text not null default 'medium',        -- 'light' | 'medium' | 'heavy' (Life Balance weight)
   created_at  bigint not null,
   inserted_at timestamptz not null default now()
 );
+
+-- Backfill columns on databases created before these fields existed.
+alter table public.resolutions add column if not exists completions jsonb not null default '[]'::jsonb;
+alter table public.resolutions add column if not exists effort      text  not null default 'medium';
+
+-- Seed the completion log from already-completed resolutions, dating each to its
+-- creation time (the only timestamp available) so history isn't fabricated.
+update public.resolutions
+set completions = jsonb_build_array(
+  jsonb_build_object('date', to_char(to_timestamp(created_at / 1000.0), 'YYYY-MM-DD'), 'ts', created_at))
+where done = true and completions = '[]'::jsonb;
 
 create table if not exists public.reviews (
   id          text primary key,
