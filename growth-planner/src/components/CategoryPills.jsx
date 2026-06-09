@@ -14,7 +14,7 @@ export default function CategoryPills() {
     ...CAT_KEYS.map((k) => ({ id: `cat:${k}`, label: CATS[k].label, color: CATS[k].color, dot: true })),
     { id: "someday", label: "Someday", color: "#BA7517" },
     { id: "achieved", label: "Done", color: "#1D9E75" },
-    { id: "archived", label: "Archived", color: "#6E7787" },
+    { id: "archived", label: "Archive", color: "#6E7787" },
   ];
 
   return (

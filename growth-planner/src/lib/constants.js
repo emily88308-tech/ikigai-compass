@@ -15,7 +15,7 @@ export const STATUS = {
   active:   { label: "Active",   color: "#7F77DD", bg: "#EEEDFE" },
   someday:  { label: "Someday",  color: "#BA7517", bg: "#FAEEDA" },
   achieved: { label: "Done",     color: "#1D9E75", bg: "#E1F5EE" },
-  archived: { label: "Archived", color: "#6E7787", bg: "#EEF0F3" },
+  archived: { label: "Archive", color: "#6E7787", bg: "#EEF0F3" },
 };
 
 // The status options a goal can move through depend on its kind: ongoing goals
