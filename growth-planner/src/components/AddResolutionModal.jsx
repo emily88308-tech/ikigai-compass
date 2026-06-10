@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CATS, RES_TYPES, RES_TYPE_KEYS } from "../lib/constants";
+import { CATS, RES_TYPES, RES_TYPE_KEYS, EFFORTS, EFFORT_KEYS } from "../lib/constants";
 import { useGoalsStore } from "../store/goalsStore";
 import { useUiStore } from "../store/uiStore";
 import { useIsMobile } from "../hooks/useWindowSize";
@@ -19,12 +19,12 @@ export default function AddResolutionModal() {
   const selectableGoals = edit && !activeGoals.some(g=>g.id===edit.goalId)
     ? [...activeGoals, goals.find(g=>g.id===edit.goalId)].filter(Boolean)
     : activeGoals;
-  const [goalId,setGoalId]=useState(ctx.goalId||activeGoals[0]?.id||""),[type,setType]=useState(ctx.type||"monthly"),[title,setTitle]=useState(edit?.title||"");
+  const [goalId,setGoalId]=useState(ctx.goalId||activeGoals[0]?.id||""),[type,setType]=useState(ctx.type||"monthly"),[effort,setEffort]=useState(edit?.effort||"medium"),[title,setTitle]=useState(edit?.title||"");
   const goal=selectableGoals.find(g=>g.id===goalId), c=goal?CATS[goal.category]:{color:"#7F77DD",bg:"#EEEDFE"};
   function submit(){
     if(!title.trim()||!goalId) return;
-    if(edit) updateResolution({...edit,goalId,type,title:title.trim()}); // preserves id, done, createdAt
-    else addResolution({goalId,type,title:title.trim()});
+    if(edit) updateResolution({...edit,goalId,type,effort,title:title.trim()}); // preserves id, completions, createdAt
+    else addResolution({goalId,type,effort,title:title.trim()});
     onClose();
   }
   return (
@@ -41,6 +41,13 @@ export default function AddResolutionModal() {
         <div style={{fontSize:11,fontWeight:500,color:"var(--color-text-secondary)",letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:8}}>When</div>
         <div style={{display:"flex",gap:8,marginBottom:18}}>
           {RES_TYPE_KEYS.map(t=><button key={t} onClick={()=>setType(t)} style={{flex:1,padding:"9px 0",borderRadius:10,border:`1.5px solid ${type===t?c.color:"var(--color-border-tertiary)"}`,background:type===t?c.bg:"transparent",color:type===t?c.color:"var(--color-text-secondary)",cursor:"pointer",fontSize:13,fontWeight:type===t?500:400}}>{RES_TYPES[t].label}</button>)}
+        </div>
+        <div style={{fontSize:11,fontWeight:500,color:"var(--color-text-secondary)",letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:8}}>Effort <span style={{textTransform:"none",letterSpacing:0,color:"var(--color-text-tertiary)",fontWeight:400}}>· weights it in Life Balance</span></div>
+        <div style={{display:"flex",gap:8,marginBottom:18}}>
+          {EFFORT_KEYS.map(e=><button key={e} onClick={()=>setEffort(e)} style={{flex:1,padding:"8px 0",borderRadius:10,border:`1.5px solid ${effort===e?c.color:"var(--color-border-tertiary)"}`,background:effort===e?c.bg:"transparent",color:effort===e?c.color:"var(--color-text-secondary)",cursor:"pointer",fontSize:13,fontWeight:effort===e?500:400}}>
+            <div>{EFFORTS[e].label}</div>
+            <div style={{fontSize:10,fontWeight:400,opacity:.8,marginTop:2}}>{EFFORTS[e].desc}</div>
+          </button>)}
         </div>
         <div style={{fontSize:11,fontWeight:500,color:"var(--color-text-secondary)",letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:6}}>Resolution</div>
         <input autoFocus value={title} onChange={e=>setTitle(e.target.value)} onKeyDown={e=>e.key==="Enter"&&submit()} placeholder="e.g. Read one book this month" style={{display:"block",width:"100%",marginBottom:24,fontSize:14,padding:"10px 13px",borderRadius:10,border:"0.5px solid var(--color-border-secondary)",background:"var(--color-background-secondary)",color:"var(--color-text-primary)",boxSizing:"border-box"}}/>

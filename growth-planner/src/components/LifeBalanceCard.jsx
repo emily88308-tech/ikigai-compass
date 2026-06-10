@@ -1,4 +1,4 @@
-import { CATS, CAT_KEYS } from "../lib/constants";
+import { CATS, CAT_KEYS, effortWeight } from "../lib/constants";
 import { useGoalsStore } from "../store/goalsStore";
 import { useIsMobile } from "../hooks/useWindowSize";
 import { isDoneNow } from "../lib/recurrence";
@@ -18,7 +18,10 @@ export default function LifeBalanceCard() {
         {CAT_KEYS.map(k=>{
           const cg=activeGoals.filter(g=>g.category===k);
           const cr=resolutions.filter(r=>cg.some(g=>g.id===r.goalId));
-          const pct=cr.length?Math.round(cr.filter(isDoneNow).length/cr.length*100):0;
+          // Effort-weighted: a heavy resolution pulls the score more than a light one.
+          const totalW=cr.reduce((s,r)=>s+effortWeight(r.effort),0);
+          const doneW=cr.reduce((s,r)=>s+(isDoneNow(r)?effortWeight(r.effort):0),0);
+          const pct=totalW?Math.round(doneW/totalW*100):0;
           const c=CATS[k];
           return (
             <div key={k} style={{marginBottom:7}}>
