@@ -1,7 +1,7 @@
 import { CATS, RES_TYPES, EFFORTS } from "../lib/constants";
 import { useGoalsStore } from "../store/goalsStore";
 import { useUiStore } from "../store/uiStore";
-import { isDoneNow } from "../lib/recurrence";
+import { isDoneNow, recurrenceCaption } from "../lib/recurrence";
 
 export default function ResolutionsPane({ type }) {
   const goals = useGoalsStore(s=>s.goals);
@@ -39,6 +39,7 @@ export default function ResolutionsPane({ type }) {
                 <div style={{fontSize:14,color:dn?"var(--color-text-tertiary)":"var(--color-text-primary)",textDecoration:dn?"line-through":"none",marginBottom:4,lineHeight:1.3}}>{r.title}</div>
                 {goal&&<span style={{fontSize:11,padding:"2px 10px",borderRadius:20,background:c.bg,color:c.color,fontWeight:500}}>{goal.title}</span>}
                 {r.effort&&r.effort!=="medium"&&<span style={{fontSize:10,color:"var(--color-text-tertiary)",marginLeft:6}}>· {EFFORTS[r.effort].label} effort</span>}
+                {recurrenceCaption(r)&&<div style={{fontSize:10.5,color:dn?"#1D9E75":"var(--color-text-tertiary)",marginTop:5}}>{recurrenceCaption(r)}</div>}
               </div>
               <button onClick={()=>openEditRes(r)} title="Edit resolution" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:13,padding:"2px 4px",flexShrink:0}}>✎</button>
               <button onClick={()=>onDelete(r.id)} title="Delete resolution" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:16,padding:"2px 4px",flexShrink:0}}>×</button>

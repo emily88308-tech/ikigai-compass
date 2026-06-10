@@ -1,4 +1,4 @@
-import { todayISO } from "./utils";
+import { todayISO, fmtDateStr } from "./utils";
 
 // Completion-log model. A resolution carries `completions`: an array of
 // { date: "YYYY-MM-DD", ts: epochMs } entries. Whether a resolution counts as
@@ -56,4 +56,26 @@ export function toggleCompletion(res) {
 // Recompute the denormalised `done` flag from the completion log.
 export function withDone(res) {
   return { ...res, done: isDoneNow(res) };
+}
+
+// A short human caption that makes recurrence visible on a resolution row, e.g.
+//   "✓ done this week · resets Mon · 3×"   (weekly, completed this week)
+//   "↻ resets Mon · last Jun 2 · 3×"       (weekly, open, with history)
+//   "✓ done Jun 9"                          (anytime, completed)
+// Returns "" when there's nothing useful to show.
+export function recurrenceCaption(res) {
+  const comps = res.completions || [];
+  const count = comps.length;
+  const done = isDoneNow(res);
+  const last = count ? comps.slice().sort((a, b) => b.ts - a.ts)[0].date : null;
+
+  if (res.type === "anytime") return done ? `✓ done ${fmtDateStr(last)}` : "";
+
+  const noun = res.type === "weekly" ? "week" : "month";
+  const reset = res.type === "weekly" ? "resets Mon" : "resets monthly";
+  const bits = [];
+  if (done) bits.push(`✓ done this ${noun}`, reset);
+  else { bits.push(`↻ ${reset}`); if (last) bits.push(`last ${fmtDateStr(last)}`); }
+  if (count) bits.push(`${count}×`);
+  return bits.join(" · ");
 }

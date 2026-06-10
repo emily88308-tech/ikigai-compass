@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { CATS, STATUS, RES_TYPES, RES_TYPE_KEYS, GOAL_KINDS } from "../lib/constants";
 import { uid, today, fmtTs, fmtDateStr, todayISO } from "../lib/utils";
-import { isDoneNow } from "../lib/recurrence";
+import { isDoneNow, recurrenceCaption } from "../lib/recurrence";
 import { useGoalsStore } from "../store/goalsStore";
 import { useUiStore } from "../store/uiStore";
 import StatusPicker from "./StatusPicker";
@@ -80,7 +80,10 @@ export default function GoalCard({ goal, showStatus }) {
                   {list.map(r=>{const dn=isDoneNow(r);return (
                     <div key={r.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:8,background:"var(--color-background-secondary)",marginBottom:5}}>
                       <input type="checkbox" checked={dn} onChange={()=>toggleResolution(r.id)} style={{accentColor:c.color,width:14,height:14,cursor:"pointer",flexShrink:0}}/>
-                      <span style={{flex:1,fontSize:13,color:dn?"var(--color-text-tertiary)":"var(--color-text-primary)",textDecoration:dn?"line-through":"none"}}>{r.title}</span>
+                      <div style={{flex:1,minWidth:0}}>
+                        <span style={{fontSize:13,color:dn?"var(--color-text-tertiary)":"var(--color-text-primary)",textDecoration:dn?"line-through":"none"}}>{r.title}</span>
+                        {recurrenceCaption(r)&&<div style={{fontSize:10,color:dn?"#1D9E75":"var(--color-text-tertiary)",marginTop:2}}>{recurrenceCaption(r)}</div>}
+                      </div>
                       <button onClick={()=>openEditRes(r)} title="Edit resolution" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:12,lineHeight:1,padding:"0 2px"}}>✎</button>
                       <button onClick={()=>deleteResolution(r.id)} title="Delete resolution" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:14,lineHeight:1,padding:"0 2px"}}>×</button>
                     </div>
