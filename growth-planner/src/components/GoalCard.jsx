@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CATS, STATUS, RES_TYPES, RES_TYPE_KEYS, GOAL_KINDS } from "../lib/constants";
 import { uid, today, fmtTs, fmtDateStr, todayISO } from "../lib/utils";
 import { isDoneNow, recurrenceCaption } from "../lib/recurrence";
@@ -7,7 +7,7 @@ import { useUiStore } from "../store/uiStore";
 import StatusPicker from "./StatusPicker";
 
 export default function GoalCard({ goal, showStatus }) {
-  const [expanded,setExpanded]=useState(false),[newNote,setNewNote]=useState("");
+  const [expanded,setExpanded]=useState(()=>useUiStore.getState().focusGoalId===goal.id),[newNote,setNewNote]=useState("");
   const allRes = useGoalsStore(st=>st.resolutions);
   const toggleResolution = useGoalsStore(st=>st.toggleResolution);
   const deleteResolution = useGoalsStore(st=>st.deleteResolution);
@@ -16,6 +16,18 @@ export default function GoalCard({ goal, showStatus }) {
   const openAddRes = useUiStore(st=>st.openAddRes);
   const openEditRes = useUiStore(st=>st.openEditRes);
   const openEditGoal = useUiStore(st=>st.openEditGoal);
+  const focusGoalId = useUiStore(st=>st.focusGoalId);
+  const clearFocusGoal = useUiStore(st=>st.clearFocusGoal);
+  const rootRef = useRef(null);
+
+  // When linked-to from elsewhere (e.g. a resolution's goal pill), this card
+  // mounts already expanded (above); scroll it into view, then clear the flag.
+  useEffect(()=>{
+    if(focusGoalId===goal.id){
+      rootRef.current?.scrollIntoView({behavior:"smooth",block:"start"});
+      clearFocusGoal();
+    }
+  },[focusGoalId,goal.id,clearFocusGoal]);
 
   const c=CATS[goal.category], s=STATUS[goal.status||"active"];
   const myRes=allRes.filter(r=>r.goalId===goal.id);
@@ -30,7 +42,7 @@ export default function GoalCard({ goal, showStatus }) {
   const overdue = goal.targetDate && goal.status!=="achieved" && goal.targetDate < todayISO();
 
   return (
-    <div style={{background:"var(--color-background-primary)",borderRadius:14,border:"0.5px solid var(--color-border-tertiary)",overflow:"hidden",marginBottom:12,borderTop:`3px solid ${c.color}`,opacity:goal.status==="achieved"?.85:1}}>
+    <div ref={rootRef} style={{background:"var(--color-background-primary)",borderRadius:14,border:"0.5px solid var(--color-border-tertiary)",overflow:"hidden",marginBottom:12,borderTop:`3px solid ${c.color}`,opacity:goal.status==="achieved"?.85:1}}>
       <div style={{padding:"14px 16px",cursor:"pointer",display:"flex",gap:12,alignItems:"flex-start"}} onClick={()=>setExpanded(x=>!x)}>
         <div style={{flex:1,minWidth:0}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6,flexWrap:"wrap"}}>

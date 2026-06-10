@@ -7,9 +7,13 @@ export const useUiStore = create((set) => ({
   addGoalOpen: false,
   editGoal: null, // existing goal being edited (reuses AddGoalModal) | null
   addResCtx: null, // { goalId, type, edit? } | null — `edit` holds a resolution being edited
+  focusGoalId: null, // a goal to scroll to + auto-expand after navigation, then cleared
   toast: null, // { type: 'error' | 'info', text } | null — surfaced globally by <Toast/>
 
   setPage: (page) => set({ page }),
+  // Jump to a goal: open its category view and flag it to expand/scroll into view.
+  focusGoal: (goalId, category) => set({ page: `cat:${category}`, focusGoalId: goalId }),
+  clearFocusGoal: () => set({ focusGoalId: null }),
   openAddGoal: () => set({ addGoalOpen: true, editGoal: null }),
   openEditGoal: (goal) => set({ addGoalOpen: true, editGoal: goal }),
   closeAddGoal: () => set({ addGoalOpen: false, editGoal: null }),

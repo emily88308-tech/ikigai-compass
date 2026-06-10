@@ -10,6 +10,7 @@ export default function ResolutionsPane({ type }) {
   const onDelete = useGoalsStore(s=>s.deleteResolution);
   const openAddRes = useUiStore(s=>s.openAddRes);
   const openEditRes = useUiStore(s=>s.openEditRes);
+  const focusGoal = useUiStore(s=>s.focusGoal);
 
   const activeGoalIds=new Set(goals.filter(g=>(g.status||"active")==="active").map(g=>g.id));
   const filtered=resolutions.filter(r=>r.type===type&&activeGoalIds.has(r.goalId));
@@ -37,7 +38,7 @@ export default function ResolutionsPane({ type }) {
               <input type="checkbox" checked={dn} onChange={()=>onToggle(r.id)} style={{accentColor:c.color,width:15,height:15,cursor:"pointer",flexShrink:0}}/>
               <div style={{flex:1,minWidth:0}}>
                 <div style={{fontSize:14,color:dn?"var(--color-text-tertiary)":"var(--color-text-primary)",textDecoration:dn?"line-through":"none",marginBottom:4,lineHeight:1.3}}>{r.title}</div>
-                {goal&&<span style={{fontSize:11,padding:"2px 10px",borderRadius:20,background:c.bg,color:c.color,fontWeight:500}}>{goal.title}</span>}
+                {goal&&<button onClick={()=>focusGoal(goal.id,goal.category)} title="Go to goal" style={{fontSize:11,padding:"2px 10px",borderRadius:20,background:c.bg,color:c.color,fontWeight:500,border:"none",cursor:"pointer"}}>{goal.title} ↗</button>}
                 {r.effort&&r.effort!=="medium"&&<span style={{fontSize:10,color:"var(--color-text-tertiary)",marginLeft:6}}>· {EFFORTS[r.effort].label} effort</span>}
                 {recurrenceCaption(r)&&<div style={{fontSize:10.5,color:dn?"#1D9E75":"var(--color-text-tertiary)",marginTop:5}}>{recurrenceCaption(r)}</div>}
               </div>
