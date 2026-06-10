@@ -1,5 +1,6 @@
 import { CATS, CAT_KEYS, GOAL_KINDS } from "../lib/constants";
 import { useGoalsStore } from "../store/goalsStore";
+import { useUiStore } from "../store/uiStore";
 import { fmtTs, monthLabel } from "../lib/utils";
 import LifeBalanceCard from "./LifeBalanceCard";
 
@@ -11,6 +12,7 @@ const ACCENT = "#1D9E75";
 export default function AchievementsView() {
   const goals = useGoalsStore(s=>s.goals);
   const resolutions = useGoalsStore(s=>s.resolutions);
+  const setPage = useUiStore(s=>s.setPage);
 
   // "Output" = cumulative completions from the log (every time a resolution was
   // ticked), not just whether it's done in the current period.
@@ -56,9 +58,12 @@ export default function AchievementsView() {
 
   return (
     <div style={{flex:1,display:"flex",flexDirection:"column",minWidth:0,height:"100%"}}>
-      <div style={{marginBottom:16,flexShrink:0}}>
-        <h2 style={{margin:0,fontSize:17,fontWeight:500,color:ACCENT}}>Achievements</h2>
-        <p style={{margin:"3px 0 0",fontSize:12,color:"var(--color-text-secondary)"}}>A record of what you've completed and produced across your Ikigai compass</p>
+      <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:12,marginBottom:16,flexShrink:0}}>
+        <div>
+          <h2 style={{margin:0,fontSize:17,fontWeight:500,color:ACCENT}}>Achievements</h2>
+          <p style={{margin:"3px 0 0",fontSize:12,color:"var(--color-text-secondary)"}}>A record of what you've completed and produced across your Ikigai compass</p>
+        </div>
+        <button onClick={()=>setPage("calendar")} style={{flexShrink:0,padding:"7px 14px",borderRadius:8,border:"0.5px solid var(--color-border-secondary)",background:"var(--color-background-primary)",color:"var(--color-text-secondary)",cursor:"pointer",fontSize:12,fontWeight:500,whiteSpace:"nowrap"}}>📅 Calendar</button>
       </div>
 
       <div style={{flex:1,overflowY:"auto"}}>
