@@ -36,13 +36,15 @@ create table if not exists public.resolutions (
   done        boolean not null default false,        -- denormalised cache of "done in current period"
   completions jsonb not null default '[]'::jsonb,    -- [{ date:'YYYY-MM-DD', ts:epochMs }] completion log
   effort      text not null default 'medium',        -- 'light' | 'medium' | 'heavy' (Life Balance weight)
+  retired     boolean not null default false,        -- hidden from active lists; completions kept for history
   created_at  bigint not null,
   inserted_at timestamptz not null default now()
 );
 
 -- Backfill columns on databases created before these fields existed.
-alter table public.resolutions add column if not exists completions jsonb not null default '[]'::jsonb;
-alter table public.resolutions add column if not exists effort      text  not null default 'medium';
+alter table public.resolutions add column if not exists completions jsonb   not null default '[]'::jsonb;
+alter table public.resolutions add column if not exists effort      text    not null default 'medium';
+alter table public.resolutions add column if not exists retired     boolean not null default false;  -- retired keeps history but hides from active lists
 
 -- Seed the completion log from already-completed resolutions, dating each to its
 -- creation time (the only timestamp available) so history isn't fabricated.

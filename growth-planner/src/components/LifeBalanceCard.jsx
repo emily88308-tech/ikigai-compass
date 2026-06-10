@@ -17,7 +17,7 @@ export default function LifeBalanceCard() {
         <div style={{fontSize:13,fontWeight:500,color:"var(--color-text-primary)",marginBottom:10}}>Life balance</div>
         {CAT_KEYS.map(k=>{
           const cg=activeGoals.filter(g=>g.category===k);
-          const cr=resolutions.filter(r=>cg.some(g=>g.id===r.goalId));
+          const cr=resolutions.filter(r=>!r.retired&&cg.some(g=>g.id===r.goalId));
           // Effort-weighted: a heavy resolution pulls the score more than a light one.
           const totalW=cr.reduce((s,r)=>s+effortWeight(r.effort),0);
           const doneW=cr.reduce((s,r)=>s+(isDoneNow(r)?effortWeight(r.effort):0),0);

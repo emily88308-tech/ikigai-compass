@@ -7,7 +7,7 @@ export default function RadarChart({ goals, resolutions }) {
   const scores = CAT_KEYS.map(k=>{
     const cg=active.filter(g=>g.category===k);
     if(!cg.length) return 0;
-    const cr=resolutions.filter(r=>cg.some(g=>g.id===r.goalId));
+    const cr=resolutions.filter(r=>!r.retired&&cg.some(g=>g.id===r.goalId));
     if(!cr.length) return 0.13;
     const totalW=cr.reduce((s,r)=>s+effortWeight(r.effort),0);
     const doneW=cr.reduce((s,r)=>s+(isDoneNow(r)?effortWeight(r.effort):0),0);

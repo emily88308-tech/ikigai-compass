@@ -92,6 +92,16 @@ export const useGoalsStore = create((set, get) => ({
     db.removeResolution(id).catch(logFail);
   },
 
+  // Retire (or restore) a resolution: hides it from active lists while keeping
+  // its completion log, so the calendar and stats retain the history.
+  setResolutionRetired: (id, retired) => {
+    const cur = get().resolutions.find((r) => r.id === id);
+    if (!cur) return;
+    const next = { ...cur, retired };
+    set((s) => ({ resolutions: s.resolutions.map((r) => (r.id === id ? next : r)) }));
+    db.saveResolution(get().userId, next).catch(logFail);
+  },
+
   saveReview: (fields) => {
     const review = { id: uid(), createdAt: Date.now(), date: today(), ...fields };
     set((s) => ({ reviews: [...s.reviews, review] }));

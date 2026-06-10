@@ -11,6 +11,7 @@ export default function GoalCard({ goal, showStatus }) {
   const allRes = useGoalsStore(st=>st.resolutions);
   const toggleResolution = useGoalsStore(st=>st.toggleResolution);
   const deleteResolution = useGoalsStore(st=>st.deleteResolution);
+  const setResRetired = useGoalsStore(st=>st.setResolutionRetired);
   const deleteGoal = useGoalsStore(st=>st.deleteGoal);
   const updateGoal = useGoalsStore(st=>st.updateGoal);
   const openAddRes = useUiStore(st=>st.openAddRes);
@@ -30,12 +31,19 @@ export default function GoalCard({ goal, showStatus }) {
   },[focusGoalId,goal.id,clearFocusGoal]);
 
   const c=CATS[goal.category], s=STATUS[goal.status||"active"];
-  const myRes=allRes.filter(r=>r.goalId===goal.id);
+  const myRes=allRes.filter(r=>r.goalId===goal.id && !r.retired);
   const resByType=(t)=>myRes.filter(r=>r.type===t);
   const done=myRes.filter(isDoneNow).length,pct=myRes.length?Math.round(done/myRes.length*100):null;
   const reflections=goal.reflections||[];
 
   function addReflection(){ if(!newNote.trim()) return; updateGoal({...goal,reflections:[...reflections,{id:uid(),text:newNote.trim(),date:today()}]}); setNewNote(""); }
+  function confirmDeleteRes(r){
+    const n=(r.completions||[]).length;
+    const msg = n>0
+      ? `Delete "${r.title}"?\n\nThis also permanently removes ${n} logged completion${n!==1?"s":""} and their calendar entries — it can't be undone.\n\nTip: "Retire" instead keeps the history and just hides this from your active list.`
+      : `Delete "${r.title}"? This can't be undone.`;
+    if(window.confirm(msg)) deleteResolution(r.id);
+  }
   function deleteReflection(id){ updateGoal({...goal,reflections:reflections.filter(r=>r.id!==id)}); }
   const isActive = goal.status==="active" || !goal.status;
   const isOngoing = goal.kind==="ongoing";
@@ -97,7 +105,8 @@ export default function GoalCard({ goal, showStatus }) {
                         {recurrenceCaption(r)&&<div style={{fontSize:10,color:dn?"#1D9E75":"var(--color-text-tertiary)",marginTop:2}}>{recurrenceCaption(r)}</div>}
                       </div>
                       <button onClick={()=>openEditRes(r)} title="Edit resolution" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:12,lineHeight:1,padding:"0 2px"}}>✎</button>
-                      <button onClick={()=>deleteResolution(r.id)} title="Delete resolution" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:14,lineHeight:1,padding:"0 2px"}}>×</button>
+                      <button onClick={()=>setResRetired(r.id,true)} title="Retire (stop tracking, keep history)" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:12,lineHeight:1,padding:"0 2px"}}>⊘</button>
+                      <button onClick={()=>confirmDeleteRes(r)} title="Delete resolution" style={{background:"none",border:"none",cursor:"pointer",color:"var(--color-text-tertiary)",fontSize:14,lineHeight:1,padding:"0 2px"}}>×</button>
                     </div>
                   );})}
                   <button onClick={()=>openAddRes(goal.id,type)} style={{fontSize:12,color:c.color,background:c.bg,border:`0.5px solid ${c.color}33`,cursor:"pointer",padding:"5px 14px",borderRadius:20,fontWeight:500}}>+ Add {type}</button>

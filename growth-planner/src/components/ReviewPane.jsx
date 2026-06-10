@@ -11,7 +11,7 @@ export default function ReviewPane() {
 
   const [type,setType]=useState("monthly"),[note,setNote]=useState("");
   const activeIds=new Set(goals.filter(g=>(g.status||"active")==="active").map(g=>g.id));
-  const filtered=resolutions.filter(r=>r.type===type&&activeIds.has(r.goalId));
+  const filtered=resolutions.filter(r=>r.type===type&&activeIds.has(r.goalId)&&!r.retired);
   const done=filtered.filter(isDoneNow).length,total=filtered.length,pct=total?Math.round(done/total*100):0;
   const pastReviews=reviews.filter(r=>r.type===type).sort((a,b)=>b.createdAt-a.createdAt);
   function submit(){ if(!note.trim()) return; onSaveReview({type,note:note.trim(),done,total,pct}); setNote(""); }
